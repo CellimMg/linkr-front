@@ -26,6 +26,9 @@ const Container = styled.div`
     border-radius: 16px;
     padding: 15px;
     display: flex;
+    @media (max-width: 610px){
+        width: 100%;
+    }
 `
 const Left = styled.div`
     width: 60px;
