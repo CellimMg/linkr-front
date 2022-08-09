@@ -22,6 +22,7 @@ display: flex;
 align-items: center;
 padding:0px 30px 0px;
 justify-content: space-between;
+flex-wrap:wrap ;
 
 h1{
     font-family: 'Passion One';
@@ -36,11 +37,14 @@ img{
     object-fit: cover;
 }
 input{
-    min-width:560px;
+    width: 560px ;
+    max-width:560px;
     background: #FFFFFF;
     border-radius: 8px;
     height: 45px;
     border:none;
+    display: flex;
+    flex-wrap: wrap;
     }
 
 ` 
