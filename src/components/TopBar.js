@@ -4,12 +4,9 @@ export default function TopBar(){
     return(
         <Top>
             <h1>linkr</h1>
-            
                 <input
                  placeholder='Search for people'
                  />
-                
-            
             <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
         </Top>
     )
