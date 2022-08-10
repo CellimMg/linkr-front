@@ -20,7 +20,17 @@ export default function UserPage(){
             setLoad(false)  
         })
     }
-    
+    function loadPosts(e,index){
+        const postsData = {
+            userId: id,
+            userName: userData.name,
+            userImage:userData.picture,
+            postId:e.postId,
+            link:e.link,
+            description:e.description
+        }
+        return <Post postData={postsData} key={index} />
+    }
     return (<>
         {load? <></>:
         <Container>
@@ -29,7 +39,7 @@ export default function UserPage(){
                 <h1>{userData.name}'s posts</h1>
             </Head>
             <Content>
-                {userData.posts.map((e)=><Post></Post>)}
+                {userData.posts.map((e,index)=>loadPosts(e,index))}
             </Content>
             
            
