@@ -44,7 +44,6 @@ const Container = styled.div`
     justify-content: center;
     flex-wrap: wrap;
     margin-top:70px;
-
 `
 const Head = styled.div` 
     width: 610px;
@@ -70,7 +69,6 @@ const Head = styled.div`
 }
 `
 const Content = styled.div`
-    background-color: aliceblue;
     display: flex;
     flex-direction: column;
 `
