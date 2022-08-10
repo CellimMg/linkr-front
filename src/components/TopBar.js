@@ -1,28 +1,28 @@
 import styled from 'styled-components';
+import React from 'react';
+import SearchBar from './SearchBar';
 
 export default function TopBar(){
     return(
         <Top>
             <h1>linkr</h1>
-                <input
-                 placeholder='Search for people'
-                 />
+             <SearchBar></SearchBar>
             <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
         </Top>
     )
 }
 
 const Top = styled.div`
-    height: 70px;
-    width: 100%;
-    background-color: #151515;
-    display: flex;
-    align-items: center;
-    padding:0px 30px 0px;
-    justify-content: space-between;
-    position: fixed;
-    left: 0;
-    top: 0;
+
+height: 70px;
+background-color: #151515;
+display: flex;
+padding:10px 30px 0px;
+justify-content: space-between;
+z-index: 1;
+position: fixed;
+left: 0;
+top: 0;
 
     h1{
         font-family: 'Passion One';
@@ -50,5 +50,6 @@ const Top = styled.div`
             display: none;
         }
     }
+
 
 ` 
