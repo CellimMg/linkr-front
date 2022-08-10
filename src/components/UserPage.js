@@ -1,18 +1,36 @@
 import styled from 'styled-components'
-import Post from './Post'
+import Post from './Post';
+import axios from 'axios';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 export default function UserPage(){
+    const [userData, setUserData] = React.useState()
+    const [load,setLoad] = React.useState(true)
+    let {id} = useParams()
+    
+    React.useEffect(()=> {
+        getPosts()
+    },[id])
 
-    return (
-        <Container>
+    function getPosts(){
+        const promise = axios.get(`http://localhost:4000/user/${id}`)
+        promise.then((req) => {
+            setUserData(req.data)
+            setLoad(false)  
+        })
+    }
+    
+    return (<>
+        {load? <></>:<Container>
             <Head>
-                <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
-                <h1>Luis Henrique posts</h1>
+                <img src={userData.picture} alt='perfil'></img>
+                <h1>{userData.name}'s posts</h1>
             </Head>
             <Post></Post>
            
-        </Container>
-    )
+        </Container>}
+        </>)
 }
 
 const Container = styled.div`
@@ -23,6 +41,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
+    margin-top:70px
 
 `
 const Head = styled.div` 
