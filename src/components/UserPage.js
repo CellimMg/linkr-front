@@ -8,7 +8,7 @@ export default function UserPage(){
     const [userData, setUserData] = React.useState()
     const [load,setLoad] = React.useState(true)
     let {id} = useParams()
-    
+
     React.useEffect(()=> {
         getPosts()
     },[id])
@@ -22,12 +22,16 @@ export default function UserPage(){
     }
     
     return (<>
-        {load? <></>:<Container>
+        {load? <></>:
+        <Container>
             <Head>
                 <img src={userData.picture} alt='perfil'></img>
                 <h1>{userData.name}'s posts</h1>
             </Head>
-            <Post></Post>
+            <Content>
+                {userData.posts.map((e)=><Post></Post>)}
+            </Content>
+            
            
         </Container>}
         </>)
@@ -35,13 +39,11 @@ export default function UserPage(){
 
 const Container = styled.div`
     width: 100vw;
-    height: 100vh;
-    background-color: #333333;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
-    margin-top:70px
+    margin-top:70px;
 
 `
 const Head = styled.div` 
@@ -66,4 +68,9 @@ const Head = styled.div`
 @media(max-width:610px) {
     width: 100%;
 }
+`
+const Content = styled.div`
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
 `
