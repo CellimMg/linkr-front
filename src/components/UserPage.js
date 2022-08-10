@@ -71,4 +71,8 @@ const Head = styled.div`
 const Content = styled.div`
     display: flex;
     flex-direction: column;
+
+    @media(max-width:610px) {
+    width: 100%;
+}
 `
