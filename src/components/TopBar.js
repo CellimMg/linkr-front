@@ -4,6 +4,15 @@ import React from 'react';
 import axios from 'axios';
 import {BsSearch} from 'react-icons/bs'
 
+function Results({name}){
+    return (
+        <Result>
+            <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png' />
+            <p>{name}</p>
+        </Result>
+    )
+}
+
 export default function TopBar(){
     const [expended,setExpended] = React.useState(false)
     const [data, setData] =React.useState()
@@ -19,9 +28,9 @@ export default function TopBar(){
                 console.log(req.data)
             })
 
-        }
-       setExpended(false)
-        
+        }else{
+            setExpended(false)
+        }     
     }
     return(
         <Top>
@@ -33,10 +42,11 @@ export default function TopBar(){
                         debounceTimeout={300}
                         onChange={e => search(e.target.value)}
                         placeholder='Search for people'
+                        onBlur={()=> setExpended(false)}
                     ></DebounceInput>
                     <BsSearch color='#C6C6C6' size='20px'></BsSearch>
                 </Search>
-                {expended?<Itens>{data.results.map((e)=><p>{e.name}</p>)}</Itens> : <></>}
+                {expended?<Itens>{data.results.map((e)=><Results name={e.name}/>)}</Itens> : <></>}
                 
                 
             </Container>
@@ -96,7 +106,10 @@ const Search = styled.div`
         border:none;
         display: flex;
         flex-wrap: wrap;
-    
+        :focus{
+            border:none;
+            outline: none;
+        }
     }
 `
 const Itens = styled.div`
@@ -107,4 +120,18 @@ const Itens = styled.div`
    overflow: scroll;
    border-radius: 0px 0px 8px 8px;
 
+`
+const Result = styled.div`
+    display: flex;
+    height: 60px;
+    align-items: center;
+    img{
+        height: 39px;
+        width: 39px;
+        margin: 10px;
+    }
+    p{
+        font-family: 'Lato';
+        font-size:19px;
+    }
 `
