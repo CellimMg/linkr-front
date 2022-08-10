@@ -92,7 +92,7 @@ const Itens = styled.div`
    background-color: #E7E7E7;
    z-index: 1;
    padding: 10px;
-    min-height: 200px;
+    min-height: 300px;
    overflow: scroll;
    border-radius: 0px 0px 8px 8px;
 
