@@ -13,7 +13,7 @@ export default function TopBar(){
 }
 
 const Top = styled.div`
-
+width: 100vw;
 height: 70px;
 background-color: #151515;
 display: flex;
