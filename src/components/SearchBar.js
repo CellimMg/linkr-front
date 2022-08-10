@@ -3,11 +3,17 @@ import {DebounceInput} from 'react-debounce-input'
 import styled from 'styled-components';
 import React from 'react';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 
-function Results({name}){
+function Results({name,imgProfile,userId,setExpended}){
+    const navigate = useNavigate()
+    function openProfile(id){
+        setExpended(false)
+        navigate(`/user/${id}`)
+    }
     return (
-        <Result>
-            <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png' />
+        <Result onClick={()=> openProfile(userId)} >
+            <img src={imgProfile} alt='profile'/>
             <p>{name}</p>
         </Result>
     )
@@ -17,15 +23,11 @@ export default function SearchBar(){
     const [expended,setExpended] = React.useState(false)
     const [data, setData] =React.useState()
     function search(value){
-        const body = {
-            value
-        }
         if(value !== ''){
-            const promise = axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40',body)
+            const promise = axios.get(`http://localhost:4000/users?value=${value}`) //teste de rota
             promise.then((req)=> {
                 setData(req.data)
                 setExpended(true)
-                console.log(req.data)
             })
 
         }else{
@@ -40,17 +42,21 @@ export default function SearchBar(){
                 debounceTimeout={300}
                 onChange={e => search(e.target.value)}
                 placeholder='Search for people'
-                onBlur={()=> setExpended(false)}
+                onBlur={()=> setTimeout(()=> setExpended(false),500)}
             ></DebounceInput>
-            <BsSearch color='#C6C6C6' size='20px'></BsSearch>
+            <BsSearch color='#C6C6C6' size='20px'></BsSearch>   
         </Search>
-        {expended?<Itens>{data.results.map((e,index)=><Results name={e.name} key={index}/>)}</Itens> : <></>} 
+        {expended?
+        <Itens>
+            {data.map((e,index)=><Results name={e.name} imgProfile={e.picture_url} userId={e.id} key={index} setExpended={setExpended}/>)}
+        </Itens> 
+                : <></>} 
     </Container> 
     )
 }
 
 const Container = styled.div`
-    width: 500px;
+    width: 450px;
     display: flex;
     background-color: #fff;
     border-radius: 8px;
@@ -58,7 +64,7 @@ const Container = styled.div`
     z-index: 2;
     flex-direction: column;
     
-    @media (max-width: 610px) {
+    @media (max-width: 650px) {
         display: none;
     }
    

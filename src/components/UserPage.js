@@ -6,7 +6,7 @@ export default function UserPage(){
     return (
         <Container>
             <Head>
-            <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
+                <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
                 <h1>Luis Henrique posts</h1>
             </Head>
             <Post></Post>
