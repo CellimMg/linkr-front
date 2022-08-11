@@ -1,15 +1,25 @@
 import styled from 'styled-components';
-import {AiOutlineHeart} from 'react-icons/ai';
+import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 export default function Post(props){
     const dataPost = (props.postData)
+    const [liked, setLiked] = React.useState(false)
+    function like(postId){
+        if(liked){
+            setLiked(false)
+        }else{
+            setLiked(true)
+        }
+        
+    }
     return(
         <Container>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
-                <Icon> 
-                    <AiOutlineHeart />
+                <Icon onClick={(e)=> like()}> 
+                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />}    
                 </Icon>
             </Left>
             <Content>
@@ -55,6 +65,10 @@ img{
 const Icon = styled.div`
     color: #fff;
     font-size: 30px;
+    cursor: pointer;
+    :active{
+        transform: translateY(4px);
+    }
     
 `
 const Content = styled.div`
