@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../assets/fontsImport.css";
 import UserPage from "./UserPage";
 import Timeline from "./Timeline";
-import GlobalStyle from "../assets/globalStyled.js";
+import GlobalStyle from "../globalStyle.js";
 import React from "react";
 import UserContext from "../context/userContext";
 import SignUp from "./signup/SignUp";
@@ -27,8 +27,6 @@ export default function App() {
                 </Routes>
 
             </BrowserRouter>
-
-
         </UserContext.Provider>
 
     )
