@@ -3,6 +3,8 @@ import Post from './Post';
 import axios from 'axios';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import ScrollToTop from "react-scroll-to-top";
+
 
 export default function UserPage(){
     const [userData, setUserData] = React.useState()
@@ -42,7 +44,7 @@ export default function UserPage(){
                 {userData.posts.map((e,index)=>loadPosts(e,index))}
             </Content>
             
-           
+            <ScrollToTop smooth style={{background:"rgba(35, 34, 34,0.3)"}}/>
         </Container>}
         </>)
 }
