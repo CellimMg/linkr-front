@@ -11,7 +11,10 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "^4.0.3",
     "react-scroll-to-top": "^3.0.0",
+<<<<<<< HEAD
     "react-tooltip": "^4.2.21",
+=======
+>>>>>>> fd952341880d7b4cd4dc3d8848b686c4f1855ccf
     "react-toastify": "4.1",
     "styled-components": "^5.3.5"
   },

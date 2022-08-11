@@ -4,49 +4,52 @@ import axios from 'axios';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import ScrollToTop from "react-scroll-to-top";
+import TopBar from './TopBar';
 
 
-export default function UserPage(){
+export default function UserPage() {
     const [userData, setUserData] = React.useState()
-    const [load,setLoad] = React.useState(true)
-    let {id} = useParams()
+    const [load, setLoad] = React.useState(true)
+    let { id } = useParams()
 
-    React.useEffect(()=> {
+    React.useEffect(() => {
         getPosts()
-    },[id])
+    }, [id])
 
-    function getPosts(){
+    function getPosts() {
         const promise = axios.get(`http://localhost:4000/user/${id}`)
         promise.then((req) => {
             setUserData(req.data)
-            setLoad(false)  
+            setLoad(false)
         })
     }
-    function loadPosts(e,index){
+    function loadPosts(e, index) {
         const postsData = {
             userId: id,
             userName: userData.name,
-            userImage:userData.picture,
-            postId:e.postId,
-            link:e.link,
-            description:e.description
+            userImage: userData.picture,
+            postId: e.postId,
+            link: e.link,
+            description: e.description
         }
         return <Post postData={postsData} key={index} />
     }
     return (<>
-        {load? <></>:
-        <Container>
-            <Head>
-                <img src={userData.picture} alt='perfil'></img>
-                <h1>{userData.name}'s posts</h1>
-            </Head>
-            <Content>
-                {userData.posts.map((e,index)=>loadPosts(e,index))}
-            </Content>
-            
-            <ScrollToTop smooth style={{backgroundColor:"rgba(35, 34, 34,0.3)"}}/>
-        </Container>}
-        </>)
+
+        {load ? <></> :
+            <Container>
+                <TopBar />
+                <Head>
+                    <img src={userData.picture} alt='perfil'></img>
+                    <h1>{userData.name}'s posts</h1>
+                </Head>
+                <Content>
+                    {userData.posts.map((e, index) => loadPosts(e, index))}
+                </Content>
+
+                <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
+            </Container>}
+    </>)
 }
 
 const Container = styled.div`
