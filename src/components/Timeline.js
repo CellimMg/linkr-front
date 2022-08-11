@@ -1,25 +1,82 @@
+import React from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import Publication from "./Publication";
+import axios from 'axios';
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Timeline() {
 
+    const [sessionToken, setSessionToken] = React.useState(sessionStorage.getItem('token'));
+    const [posts, setPosts] = React.useState([]);
+    const [token, setToken] = React.useState("");
+    const [refreshTimeline, setRefreshTimeline] = React.useState(false);
+
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+
+        if(sessionToken){
+            setToken({
+                headers:{
+                    Authorization: `Bearer ` + sessionToken
+                }
+            })
+        }
+        const promise = axios.get(`http://localhost:4000/timeline`, sessionToken);
+
+        promise.then((res) => {
+            console.log(res.data);
+            setPosts(res.data);
+        });
+        promise.catch((error) => {
+            navigate('/');
+        });
+    }, []);
+
+    if(refreshTimeline){
+        const tl = axios.get(`http://localhost:4000/timeline`, sessionToken);
+        tl.then((res) => {
+            console.log(res.data);
+            setPosts(res.data);
+            setRefreshTimeline(false);
+        });
+        tl.catch((error) => {
+            setRefreshTimeline(false);
+            navigate('/');
+        });
+    }
     return (
         <>
-            <Container>
-                <h1>Timeline</h1>
-            </Container>
+            
+            <GeneralContainer>
+            <ToastContainer />
+                <h1 className="timeline">Timeline</h1>
+                <div>
+                    <Publication setRefreshTimeline={setRefreshTimeline}/>
+                </div>
+                <div>
+                    <Post />
+                </div>
+                
+            </GeneralContainer>
         </>
     )
 }
 
-const Container = styled.div`
+const GeneralContainer = styled.div`
     background-color: #333333;
     width: 100%;
     height: 100vh;
     padding-top: 150px;
-
-    h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    z-index: -1;
+    
+    .timeline {
         font-family: 'Oswald';
         font-style: normal;
         font-weight: 700;
@@ -27,6 +84,19 @@ const Container = styled.div`
         line-height: 64px;
         color: #FFFFFF;
 
-        margin-bottom: 64px;
+        margin-bottom: 44px;
+    }
+
+    @media (max-width: 768px){
+
+        padding-top: 80px;
+        align-items: baseline;
+
+        .timeline {
+            font-size: 33px;
+            line-height: 49px;
+            margin-bottom: 20px;
+            margin-left: 17px;
+        }
     }
 `
