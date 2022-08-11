@@ -1,18 +1,20 @@
 import styled from 'styled-components';
 import {AiOutlineHeart} from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 
-export default function Post(){
+export default function Post(props){
+    const dataPost = (props.postData)
     return(
         <Container>
             <Left>
-                <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
+                <img src={dataPost.userImage} alt='profile'></img>
                 <Icon> 
                     <AiOutlineHeart />
                 </Icon>
             </Left>
             <Content>
-                <h1>Luis</h1>
-                <p>Test teste teste</p>
+                <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
+                <p>{dataPost.description}</p>
             </Content>
                 
         </Container>
@@ -26,6 +28,11 @@ const Container = styled.div`
     border-radius: 16px;
     padding: 15px;
     display: flex;
+    margin-bottom: 15px;
+
+    a{
+        text-decoration: none;
+    }
     @media (max-width: 610px){
         width: 100%;
     }

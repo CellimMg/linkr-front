@@ -1,29 +1,65 @@
 import styled from 'styled-components'
-import Post from './Post'
+import Post from './Post';
+import axios from 'axios';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import ScrollToTop from "react-scroll-to-top";
+import TopBar from './TopBar';
 
-export default function UserPage(){
 
-    return (
-        <Container>
-            <Head>
-            <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
-                <h1>Luis Henrique posts</h1>
-            </Head>
-            <Post></Post>
-           
-        </Container>
-    )
+export default function UserPage() {
+    const [userData, setUserData] = React.useState()
+    const [load, setLoad] = React.useState(true)
+    let { id } = useParams()
+
+    React.useEffect(() => {
+        getPosts()
+    }, [id])
+
+    function getPosts() {
+        const promise = axios.get(`http://localhost:4000/user/${id}`)
+        promise.then((req) => {
+            setUserData(req.data)
+            setLoad(false)
+        })
+    }
+    function loadPosts(e, index) {
+        const postsData = {
+            userId: id,
+            userName: userData.name,
+            userImage: userData.picture,
+            postId: e.postId,
+            link: e.link,
+            description: e.description
+        }
+        return <Post postData={postsData} key={index} />
+    }
+    return (<>
+
+        {load ? <></> :
+            <Container>
+                <TopBar />
+                <Head>
+                    <img src={userData.picture} alt='perfil'></img>
+                    <h1>{userData.name}'s posts</h1>
+                </Head>
+                <Content>
+                    {userData.posts.map((e, index) => loadPosts(e, index))}
+                </Content>
+
+                <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
+            </Container>}
+    </>)
 }
 
 const Container = styled.div`
     width: 100vw;
-    height: 100vh;
-    background-color: #333333;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
-
+    margin-top:70px;
+    flex-direction: column;
 `
 const Head = styled.div` 
     width: 610px;
@@ -45,6 +81,14 @@ const Head = styled.div`
     margin: 15px;
 }
 @media(max-width:610px) {
+    width: 100%;
+}
+`
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    @media(max-width:610px) {
     width: 100%;
 }
 `
