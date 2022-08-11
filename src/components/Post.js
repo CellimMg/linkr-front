@@ -2,11 +2,14 @@ import styled from 'styled-components';
 import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
+
 
 export default function Post(props){
     const dataPost = (props.postData)
     const [liked, setLiked] = React.useState(false)
     function like(postId){
+        console.log(postId)
         if(liked){
             setLiked(false)
         }else{
@@ -18,8 +21,10 @@ export default function Post(props){
         <Container>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
-                <Icon onClick={(e)=> like()}> 
-                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />}    
+                <Icon onClick={(e)=> like(dataPost.postId)} > 
+                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
+                    <p data-tip='luis,e outros' > 0 likes</p>   
+                    <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
             <Content>
@@ -53,6 +58,19 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 18px;
+    p{
+        font-size: 11px;
+        font-family: 'Lato';
+        
+    }
+    .toolTip{
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 3px;
+        color:#505050;
+        font-size: 11px;
+        font-family: 'Lato';
+        font-weight: 700;
+    }
     
 img{
     border-radius: 26.5px;
