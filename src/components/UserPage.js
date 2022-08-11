@@ -56,6 +56,7 @@ const Container = styled.div`
     justify-content: center;
     flex-wrap: wrap;
     margin-top:70px;
+    flex-direction: column;
 `
 const Head = styled.div` 
     width: 610px;
