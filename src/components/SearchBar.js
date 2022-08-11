@@ -3,7 +3,9 @@ import {DebounceInput} from 'react-debounce-input'
 import styled from 'styled-components';
 import React from 'react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom';
+
+
 
 function Results({name,imgProfile,userId,setExpended}){
     const navigate = useNavigate()
@@ -35,7 +37,7 @@ export default function SearchBar(){
         }     
     }
     return (
-        <Container>
+        <Container >
         <Search>
             <DebounceInput
                 minLength={3}
@@ -65,7 +67,11 @@ const Container = styled.div`
     flex-direction: column;
     
     @media (max-width: 650px) {
-        display: none;
+        width: 100%;
+        position: absolute;
+        top:75px;
+        left:0
+
     }
    
 `
@@ -73,10 +79,10 @@ const Search = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    
     input{
-        width: 400px;
-        min-width: 365px;
-        background: #FFFFFF;
+        width: 360px;
+        background: #fff;
         border-radius: 8px 0px 0px 8px;
         height: 40px;
         border:none;
@@ -86,14 +92,17 @@ const Search = styled.div`
             border:none;
             outline: none;
         }
+        @media (max-width: 650px) {
+        width: 80%;
+    }
+        
     }
 `
 const Itens = styled.div`
+   max-height: 200px;
    background-color: #E7E7E7;
    z-index: 1;
    padding: 10px;
-    min-height: 300px;
-   overflow: scroll;
    border-radius: 0px 0px 8px 8px;
 
 `
