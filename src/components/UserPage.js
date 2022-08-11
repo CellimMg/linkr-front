@@ -44,7 +44,7 @@ export default function UserPage(){
                 {userData.posts.map((e,index)=>loadPosts(e,index))}
             </Content>
             
-            <ScrollToTop smooth style={{background:"rgba(35, 34, 34,0.3)"}}/>
+            <ScrollToTop smooth style={{backgroundColor:"rgba(35, 34, 34,0.3)"}}/>
         </Container>}
         </>)
 }
