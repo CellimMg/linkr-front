@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import Hashtag from "./Hashtag.js";
 
 export default function Trending() {
 
@@ -10,6 +11,8 @@ export default function Trending() {
     const [trending, setTrending] = React.useState([]);
     const [token, setToken] = React.useState("");
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
+
+    const navigate = useNavigate();
 
     React.useEffect(() => {
 
@@ -47,11 +50,11 @@ export default function Trending() {
         <>
             <GeneralContainer>
             <ToastContainer />
-                <h1>Trending</h1>
+                <h1>trending</h1>
                 <div>
                     {trending.length ? trending.map( item => { return <Hashtag key={item.id}
                                                                     name={item.hashtag}/>})
-                                        : null}
+                                        : <></>}
                 </div>
             </GeneralContainer>
         </>
@@ -61,8 +64,12 @@ export default function Trending() {
 const GeneralContainer = styled.div`
     background-color: #171717;
     width: 301px;
-    height: 406px;
+    height: auto;
     border-radius: 16px;
+    padding-top: 10px;
+    padding-bottom: 25px;
+    padding-left: 16px;
+    margin-right: 200px;
 
     h1 {
         font-size: 27px;
@@ -72,4 +79,14 @@ const GeneralContainer = styled.div`
         line-height: 64px;
         color: #FFFFFF;
     }
+
+    p {
+        font-size: 19px;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        line-height: 35px;
+        color: #FFFFFF;
+    }
+
 `

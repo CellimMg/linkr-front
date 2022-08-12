@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import ScrollToTop from "react-scroll-to-top";
 import TopBar from '../TopBar';
+import Trending from "./Trending.js";
 
 export default function HashtagPage() {
     const [hashtagData, setHashtagData] = React.useState()
@@ -37,7 +38,9 @@ export default function HashtagPage() {
     return (<>
 
         {load ? <></> :
-            <Container>
+        
+        <Container>
+            <Leftcontainer>
                 <TopBar />
                 <Head>
                     <h1># {hashtag}</h1>
@@ -47,7 +50,13 @@ export default function HashtagPage() {
                 </Content>
 
                 <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
-            </Container>}
+            </Leftcontainer>
+
+            <Rightcontainer>
+                <Trending/>
+            </Rightcontainer>
+        </Container>
+        }
     </>)
 }
 
@@ -58,6 +67,28 @@ const Container = styled.div`
     justify-content: center;
     flex-wrap: wrap;
     margin-top:70px;
+`
+
+const Rightcontainer = styled.div`
+    width: 30vw;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    margin-top: 0px;
+    flex-direction: column;
+
+    @media(max-width:965px) {
+        display: none;
+    }
+    
+`
+
+const Leftcontainer = styled.div`
+    width: 70vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
     flex-direction: column;
 `
 const Head = styled.div` 
@@ -72,12 +103,7 @@ const Head = styled.div`
         font-size:45px;
         color:#fff;
     }
-    img{
-    border-radius: 26.5px;
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin: 15px;
+    
 }
 @media(max-width:610px) {
     width: 100%;
