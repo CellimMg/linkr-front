@@ -65,22 +65,15 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
     margin-top:70px;
 `
 
 const Rightcontainer = styled.div`
     width: 30vw;
-    display: flex;
-    align-items: start;
-    justify-content: center;
-    margin-top: 0px;
-    flex-direction: column;
 
     @media(max-width:965px) {
         display: none;
     }
-    
 `
 
 const Leftcontainer = styled.div`
