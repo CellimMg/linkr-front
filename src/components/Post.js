@@ -3,20 +3,42 @@ import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
+import axios from 'axios';
+
 
 
 export default function Post(props){
     const dataPost = (props.postData)
     const [liked, setLiked] = React.useState(false)
     function like(postId){
-        console.log(postId)
+        const body ={
+            userId:1,// teste nao esquecer de mudar
+            postId
+        }
         if(liked){
+            const promise = axios.delete(`http://localhost:4000/unlike`,{data:body})
+            
             setLiked(false)
         }else{
+            
+            const promise = axios.post(`http://localhost:4000/like`,body)
             setLiked(true)
         }
         
     }
+    function getLikes(){
+    
+        const promise = axios.get(`http://localhost:4000/like/${1}/${dataPost.postId}`)// user id para usar
+        promise.then((req)=>{
+            if(req.data){
+                
+                setLiked(true)
+            }
+        })
+    }
+    React.useEffect(()=>{
+        getLikes()
+    },[])
     return(
         <Container>
             <Left>

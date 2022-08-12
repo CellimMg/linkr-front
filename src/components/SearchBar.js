@@ -100,10 +100,12 @@ const Search = styled.div`
 `
 const Itens = styled.div`
    max-height: 200px;
+   min-height: 200px;
    background-color: #E7E7E7;
    z-index: 1;
    padding: 10px;
    border-radius: 0px 0px 8px 8px;
+   overflow: auto;
 
 `
 const Result = styled.div`
