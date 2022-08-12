@@ -5,26 +5,30 @@ import Form from "../commom/Form";
 import LeftBody from "../commom/LeftBody";
 import RightBody from "../commom/RightBody";
 import 'react-toastify/dist/ReactToastify.css';
-import { useState } from "react";
-import { isEmailValid, isNameValid, isPassValid, isPictureValid, signUpUser } from "./SignUpController";
+import { useState, useContext } from "react";
+import UserContext from "../../context/userContext.js";
+import { isEmailValid, isPassValid, signInUser } from "./SignInController";
 import { showError } from "../../utils/alerts";
 
-export default function SignUp() {
+export default function SignIn() {
 
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const [fEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [userName, setUserName] = useState("");
-    const [picture, setPicture] = useState("");
     const [loading, setLoading] = useState(false);
+    const { user, setUser } = useContext(UserContext);
 
     async function submitForm(event) {
         setLoading(true);
         event.preventDefault();
-        if (isEmailValid(email) && isPassValid(password) && isNameValid(userName) && isPictureValid(picture)) {
+        if (isEmailValid(fEmail) && isPassValid(password)) {
             try {
-                await signUpUser(email, password, userName, picture);
-                navigate("/");
+                const response = await signInUser({ email: fEmail, password });
+
+                localStorage.setItem("user", JSON.stringify(response));
+                setUser(response);
+
+                navigate("/timeline");
             } catch (error) {
                 showError(error.response.data.message);
             }
@@ -43,11 +47,9 @@ export default function SignUp() {
                 <Form onSubmit={loading ? () => { } : submitForm} loading={loading}>
                     <input onChange={e => setEmail(e.target.value)} type={"email"} placeholder="e-mail"></input>
                     <input onChange={e => setPassword(e.target.value)} type={"password"} placeholder="password"></input>
-                    <input onChange={e => setUserName(e.target.value)} type={"text"} placeholder="username"></input>
-                    <input onChange={e => setPicture(e.target.value)} type={"url"} placeholder="picture url"></input>
-                    <button>Sign Up</button>
+                    <button>Log In</button>
                 </Form>
-                <span onClick={() => navigate("/")}>Switch back to login</span>
+                <span onClick={() => navigate("/signup")}>First time? Create an account!</span>
                 <ToastContainer />
             </RightBody>
         </Body>
