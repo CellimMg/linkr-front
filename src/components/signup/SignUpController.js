@@ -1,5 +1,6 @@
-import { toast } from 'react-toastify';
+import { showError } from "../../utils/alerts";
 import { signUp } from '../../repositories/authRepository.js';
+
 export async function signUpUser(email, password, name, pictureUrl) {
     try {
         await signUp({ email, password, name, pictureUrl });
@@ -41,14 +42,3 @@ export function isPictureValid(picture) {
     return true;
 }
 
-export function showError(text) {
-    toast.error(text, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-}
