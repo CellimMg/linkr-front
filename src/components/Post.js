@@ -14,6 +14,7 @@ export default function Post(props){
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
     const [load,setLoad] = React.useState(true)
+    const [countLikes, setCountLikes] = React.useState(dataPost.likes)
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -31,6 +32,7 @@ export default function Post(props){
                 .then(()=>{
                     setLoad(false)
                     setLiked(false)
+                    setCountLikes(countLikes - 1)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -42,6 +44,7 @@ export default function Post(props){
                 .then(()=>{
                     setLoad(false)
                     setLiked(true)
+                    setCountLikes(countLikes + 1)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -50,7 +53,7 @@ export default function Post(props){
         
     }
     function getLikes(){
-        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)// user id para usar
+        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
         promise.then((req)=>{
             setLoad(false)
             if(req.data){    
@@ -71,7 +74,7 @@ export default function Post(props){
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
                     {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
-                    <p data-tip='luis,e outros' > 0 likes</p>   
+                    <p data-tip='luis,e outros' > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</p>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
