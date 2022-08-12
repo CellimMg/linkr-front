@@ -5,23 +5,34 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import ScrollToTop from "react-scroll-to-top";
 import TopBar from './TopBar';
+import url from '../repositories/server.js'
+import UserContext from '../context/userContext.js';
 
 
 export default function UserPage() {
     const [userData, setUserData] = React.useState()
     const [load, setLoad] = React.useState(true)
-    let { id } = useParams()
+    const user = JSON.parse(localStorage.user)
+    let { id } = useParams();
+
+    const config ={
+        headers:{
+            Authorization: `Bearer ${user.data.token}` 
+        }
+    }
 
     React.useEffect(() => {
         getPosts()
     }, [id])
 
     function getPosts() {
-        const promise = axios.get(`http://localhost:4000/user/${id}`)
-        promise.then((req) => {
-            setUserData(req.data)
-            setLoad(false)
-        })
+        const promise = axios.get(`${url}/user/${id}`,config)
+        promise
+            .then((req) => {
+                setUserData(req.data)
+                setLoad(false)
+            })
+            .catch(error =>console.log(error.response.data))
     }
     function loadPosts(e, index) {
         const postsData = {
@@ -36,7 +47,10 @@ export default function UserPage() {
     }
     return (<>
 
-        {load ? <></> :
+        {load ? 
+        <>
+            <TopBar />
+        </> :
             <Container>
                 <TopBar />
                 <Head>
