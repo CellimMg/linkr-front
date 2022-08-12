@@ -49,7 +49,7 @@ export default function Trending() {
             <ToastContainer />
                 <h1>Trending</h1>
                 <div>
-                    {trending.length ? trending.map( item => { return <Hashtag key={item._id}
+                    {trending.length ? trending.map( item => { return <Hashtag key={item.id}
                                                                     name={item.hashtag}/>})
                                         : null}
                 </div>

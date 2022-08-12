@@ -1,99 +1,93 @@
 import React from "react";
 import styled from "styled-components";
-import Post from "./Post";
+import Post from "../Post";
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import ScrollToTop from "react-scroll-to-top";
+import TopBar from '../TopBar';
 
-export default function Timeline() {
-
-    const [sessionToken, setSessionToken] = React.useState(sessionStorage.getItem('token'));
-    const [posts, setPosts] = React.useState([]);
-    const [token, setToken] = React.useState("");
-    const [refreshTimeline, setRefreshTimeline] = React.useState(false);
-
-    const navigate = useNavigate();
-    const { hashtag } = useParams();
+export default function HashtagPage() {
+    const [hashtagData, setHashtagData] = React.useState()
+    const [load, setLoad] = React.useState(true)
+    let { hashtag } = useParams()
 
     React.useEffect(() => {
+        getPosts()
+    }, [hashtag])
 
-        if(sessionToken){
-            setToken({
-                headers:{
-                    Authorization: `Bearer ` + sessionToken
-                }
-            })
-        }
-        const promise = axios.get(`http://localhost:4000/timeline/${hashtag}`, sessionToken);
-
-        promise.then((res) => {
-            console.log(res.data);
-            setPosts(res.data);
-        });
-        promise.catch((error) => {
-            navigate('/');
-        });
-    }, []);
-
-    if(refreshTimeline){
-        const tl = axios.get(`http://localhost:4000/timeline/${hashtag}`, sessionToken);
-        tl.then((res) => {
-            console.log(res.data);
-            setPosts(res.data);
-            setRefreshTimeline(false);
-        });
-        tl.catch((error) => {
-            setRefreshTimeline(false);
-            navigate('/');
-        });
+    function getPosts() {
+        const promise = axios.get(`http://localhost:4000/timeline/${hashtag}`)
+        promise.then((req) => {
+            setHashtagData(req.data)
+            setLoad(false)
+        })
     }
-    return (
-        <>
-            
-            <GeneralContainer>
-            <ToastContainer />
-                <h1 className="timeline"># ${hashtag}</h1>
-                <div>
-                    <Post />
-                </div>
-                
-            </GeneralContainer>
-        </>
-    )
+    function loadPosts(e, index) {
+        const postsData = {
+            postId: hashtagData.id,
+            userId: e.userId,
+            userName: hashtagData.username,
+            userImage: hashtagData.userImage,
+            link: e.link,
+            description: e.description
+        }
+        return <Post postData={postsData} key={index} />
+    }
+    return (<>
+
+        {load ? <></> :
+            <Container>
+                <TopBar />
+                <Head>
+                    <h1># {hashtag}</h1>
+                </Head>
+                <Content>
+                    {hashtagData.map((e, index) => loadPosts(e, index))}
+                </Content>
+
+                <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
+            </Container>}
+    </>)
 }
 
-const GeneralContainer = styled.div`
-    background-color: #333333;
+const Container = styled.div`
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top:70px;
+    flex-direction: column;
+`
+const Head = styled.div` 
+    width: 610px;
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    h1{
+        font-family: 'Oswald';
+        font-weight: 700;
+        font-size:45px;
+        color:#fff;
+    }
+    img{
+    border-radius: 26.5px;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin: 15px;
+}
+@media(max-width:610px) {
     width: 100%;
-    height: 100vh;
-    padding-top: 150px;
+}
+`
+const Content = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    position: fixed;
-    z-index: -1;
-    
-    .timeline {
-        font-family: 'Oswald';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 43px;
-        line-height: 64px;
-        color: #FFFFFF;
 
-        margin-bottom: 44px;
-    }
-
-    @media (max-width: 768px){
-
-        padding-top: 80px;
-        align-items: baseline;
-
-        .timeline {
-            font-size: 33px;
-            line-height: 49px;
-            margin-bottom: 20px;
-            margin-left: 17px;
-        }
-    }
+    @media(max-width:610px) {
+    width: 100%;
+}
 `
