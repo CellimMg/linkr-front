@@ -1,15 +1,78 @@
 import styled from 'styled-components';
-import {AiOutlineHeart} from 'react-icons/ai';
+import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import axios from 'axios';
+import url from '../repositories/server.js';
+import userContext from '../context/userContext.js'
+
+
 
 export default function Post(props){
     const dataPost = (props.postData)
+    const [liked, setLiked] = React.useState(false)
+    const user = JSON.parse(localStorage.user)
+    const [load,setLoad] = React.useState(true)
+    const config ={
+        headers:{
+            Authorization: `Bearer ${user.data.token}` 
+        }
+    }
+    function like(postId){
+        setLoad(true)
+        const body ={
+            userId:user.data.id,
+            postId
+        }
+        if(liked){
+            const promise = axios.delete(`${url}/unlike`,{data:body,config})
+            promise
+                .then(()=>{
+                    setLoad(false)
+                    setLiked(false)
+                })
+                .catch(()=>{
+                    setLiked(false)
+                })
+            
+        }else{
+            const promise = axios.post(`${url}/like`,body,config)
+            promise
+                .then(()=>{
+                    setLoad(false)
+                    setLiked(true)
+                })
+                .catch(()=>{
+                    setLiked(false)
+                })
+        }
+        
+    }
+    function getLikes(){
+        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)// user id para usar
+        promise.then((req)=>{
+            setLoad(false)
+            if(req.data){    
+                setLiked(true)
+                
+            }
+        })
+    }
+    React.useEffect(()=>{
+        getLikes()
+    },[])
+    function doNothin(){
+        //foi de proposito isso
+    }
     return(
         <Container>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
-                <Icon> 
-                    <AiOutlineHeart />
+                <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
+                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
+                    <p data-tip='luis,e outros' > 0 likes</p>   
+                    <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
             <Content>
@@ -43,6 +106,19 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 18px;
+    p{
+        font-size: 11px;
+        font-family: 'Lato';
+        
+    }
+    .toolTip{
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 3px;
+        color:#505050;
+        font-size: 11px;
+        font-family: 'Lato';
+        font-weight: 700;
+    }
     
 img{
     border-radius: 26.5px;
@@ -55,6 +131,10 @@ img{
 const Icon = styled.div`
     color: #fff;
     font-size: 30px;
+    cursor: pointer;
+    :active{
+        transform: translateY(4px);
+    }
     
 `
 const Content = styled.div`
