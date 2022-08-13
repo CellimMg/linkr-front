@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import React from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import url from '../repositories/server.js'
 
 
 
@@ -24,9 +25,14 @@ function Results({name,imgProfile,userId,setExpended}){
 export default function SearchBar(){
     const [expended,setExpended] = React.useState(false)
     const [data, setData] =React.useState()
+    const config ={
+        headers:{
+            Authorization: `Bearer` // preciso descobrir onde esta o token
+        }
+    }
     function search(value){
         if(value !== ''){
-            const promise = axios.get(`http://localhost:4000/users?value=${value}`) //teste de rota
+            const promise = axios.get(`${url}/users?value=${value}`,config) //teste de rota
             promise.then((req)=> {
                 setData(req.data)
                 setExpended(true)
@@ -100,10 +106,12 @@ const Search = styled.div`
 `
 const Itens = styled.div`
    max-height: 200px;
+   min-height: 200px;
    background-color: #E7E7E7;
    z-index: 1;
    padding: 10px;
    border-radius: 0px 0px 8px 8px;
+   overflow: auto;
 
 `
 const Result = styled.div`

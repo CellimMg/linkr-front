@@ -1,16 +1,17 @@
 import styled from 'styled-components';
 import React from 'react';
 import SearchBar from './SearchBar';
+import UserContext from '../context/userContext.js';
 
 export default function TopBar(){
-
+const user = JSON.parse(localStorage.user)
 
     return(
         <Top>
             <Main>
             <h1>linkr</h1>
              <SearchBar></SearchBar>
-            <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
+            <img src={user.data.picture_url}></img>
             </Main>
         </Top>
     )

@@ -140,7 +140,6 @@ body,
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
     font-weight: 400;
-    color: #FFFFFF
 }
 `;
 
