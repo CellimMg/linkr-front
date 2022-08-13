@@ -37,7 +37,7 @@ export default function TopBar() {
         <Top rotate={open}>
             <Main>
                 <h1>linkr</h1>
-                <SearchBar></SearchBar>
+                <SearchBar />
                 <UserMenu>
                     <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} />
                     <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} />
@@ -52,6 +52,7 @@ const Top = styled.div`
     width: 100vw;
     height: 70px;
     display: flex;
+    background-color: #151515;
     flex-direction: column;
     align-items: center;
     z-index: 3;
@@ -67,7 +68,7 @@ const Top = styled.div`
         right: 0%;
         width: 150px;
         height: 50px;
-        transition: 0.5s;
+        transition: top 0.5s, height 0.5s, z-index: 0.1s;
         background-color: #151515;
         color: white;
         text-align: middle;
@@ -82,6 +83,7 @@ const Top = styled.div`
     .open{
         height: 50px;
         top: 100%;
+        z-index: 5;
     }
 
     h1{
@@ -92,7 +94,7 @@ const Top = styled.div`
     }
 
     img:nth-child(1){
-        margin: auto 15px auto 0px;
+        margin: 0px 15px 10px 0px;
         width: 30px;
         height: 30px;
         transition: rotateX 0.5s;
@@ -119,7 +121,7 @@ const Main = styled.div`
     padding:10px 30px 0px;
     justify-content: space-between;
     background-color: #151515;
-    height: 70px;
+    height: 75px;
     
     @media (max-width: 650px) {
        margin-bottom: 20px;
