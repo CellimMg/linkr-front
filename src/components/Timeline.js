@@ -13,9 +13,8 @@ export default function Timeline() {
     const [userData, setUserData] = React.useState([]);
     const [token, setToken] = React.useState("");
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
-    let { id } = useParams()
+    const [loading, setLoading] = React.useState(true);
 
-    const navigate = useNavigate();
 
     React.useEffect(() => {
 
@@ -30,10 +29,11 @@ export default function Timeline() {
 
         promise.then((res) => {
             console.log(res.data);
+            setLoading(false);
             setUserData(res.data);
         });
         promise.catch((error) => {
-            navigate('/');
+            alert("An error ocurred while trying to fetch the posts, please refresh the page");
         });
     }, []);
 
@@ -46,7 +46,6 @@ export default function Timeline() {
         });
         tl.catch((error) => {
             setRefreshTimeline(false);
-            navigate('/');
         });
     }
 
@@ -57,7 +56,10 @@ export default function Timeline() {
             userImage: userData.userImage,
             postId: userData.postId,
             link: userData.link,
-            description: userData.description
+            description: userData.description,
+            urlTitle: userData.urlTitle,
+            urlImage: userData.urlImage,
+            urlDescription: userData.urlDescription
         }
         return <Post postData={postsData} key={index} />
     }
@@ -98,6 +100,20 @@ const GeneralContainer = styled.div`
         color: #FFFFFF;
 
         margin-bottom: 44px;
+    }
+
+    .message {
+        margin-top: 200px;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19px;
+        line-height: 23px;
+        /* identical to box height */
+
+
+        color: #FFFFFF;
+
     }
 
     @media (max-width: 768px){
