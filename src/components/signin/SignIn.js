@@ -16,7 +16,7 @@ export default function SignIn() {
     const [fEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const { user, setUser } = useContext(UserContext);
+    const { setUser } = useContext(UserContext);
 
     async function submitForm(event) {
         setLoading(true);
