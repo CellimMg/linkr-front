@@ -64,10 +64,10 @@ export default function Post(props){
             setUsersLikes(res.data.names)
             if(res.data.names.length > 2){
                 let text = ''
-                        if(res.data.numero - 2 <= 1){
-                            text = `outra ${res.data.numero - 2} pessoa`
+                        if(res.data.quantyLikes - 2 <= 1){
+                            text = `outra ${res.data.quantyLikes - 2} pessoa`
                         }else{
-                            text = `outras ${res.data.numero - 2} pessoas`
+                            text = `outras ${res.data.quantyLikes - 2} pessoas`
                         }
                 setUsersLikes([res.data.names[0], res.data.names[1],text])   
             }
