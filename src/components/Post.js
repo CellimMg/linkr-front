@@ -99,7 +99,21 @@ export default function Post(props){
             </Left>
             <Content>
                 <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
-                <p>{dataPost.description}</p>
+                <div className='postDescription'>
+                    <p>{dataPost.description}</p>
+                </div>
+                <a href={ dataPost.link} target="_blank">
+                    <div className='linkBody'>
+                        <div className='linkText'>
+                            <h2>{dataPost.urlTitle}</h2>
+                            <h5>{dataPost.urlDescription}</h5>
+                            <h4>{dataPost.link}</h4>
+                        </div>
+                        <div className='linkImage'>
+                            <img src={dataPost.urlImage}/>
+                        </div>
+                    </div>
+                </a>
             </Content>
                 
         </Container>
@@ -169,10 +183,76 @@ const Content = styled.div`
         line-height: 23px;
         font-weight: 400;
     }
+    
+    .postDescription {
+        height: 52px;
+        margin-top: 7px;
+    }
+
     p{
         font-size: 17px;
         color:#B7B7B7;
         line-height: 20px;
         font-weight: 400;
+    }
+
+
+    .linkBody {
+        width: 503px;
+        height: 155px;
+        border: 1px solid #4D4D4D;
+        border-radius: 11px;
+        display: flex;
+    }
+
+    .linkText {
+        width: 350px;
+        padding: 20px 26px 23px 20px;
+    }
+
+    .linkImage > img {
+        width: 151px;
+        height: 153px;
+        object-fit:cover;
+        border-radius: 0px 12px 13px 0px;
+    }
+
+    .linkText > h2 {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+
+        color: #CECECE;
+
+        margin-bottom: 5px;
+    }
+
+    .linkText > h4 {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 10px;
+        
+        color: #CECECE;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .linkText > h5 {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 10px;
+        
+        color: #9B9595;
+
+        margin-bottom: 13px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 `
