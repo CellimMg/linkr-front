@@ -5,8 +5,6 @@ import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
-import userContext from '../context/userContext.js'
-
 
 
 export default function Post(props){
@@ -14,6 +12,9 @@ export default function Post(props){
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
     const [load,setLoad] = React.useState(true)
+    const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
+    const [usersLikes,setUsersLikes]  = React.useState('')
+    
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -26,11 +27,14 @@ export default function Post(props){
             postId
         }
         if(liked){
-            const promise = axios.delete(`${url}/unlike`,{data:body,config})
+            const promise = axios.post(`${url}/unlike`,body, config)
             promise
                 .then(()=>{
                     setLoad(false)
                     setLiked(false)
+                    setCountLikes(countLikes - 1)
+                    setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -42,6 +46,9 @@ export default function Post(props){
                 .then(()=>{
                     setLoad(false)
                     setLiked(true)
+                    setCountLikes(countLikes + 1)
+                    setUsersLikes((e)=> ['Você',...e])
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -49,18 +56,32 @@ export default function Post(props){
         }
         
     }
-    function getLikes(){
-        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)// user id para usar
-        promise.then((req)=>{
-            setLoad(false)
-            if(req.data){    
-                setLiked(true)
-                
+    
+    function getLikes(postId){
+        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`,config)
+        whoLikes.then((res)=>{
+            setUsersLikes(res.data.names)
+            if(res.data.names.length > 2){
+                let text = ''
+                        if(res.data.quantyLikes - 2 <= 1){
+                            text = `outra ${res.data.quantyLikes - 2} pessoa`
+                        }else{
+                            text = `outras ${res.data.quantyLikes - 2} pessoas`
+                        }
+                setUsersLikes([res.data.names[0], res.data.names[1],text])   
             }
         })
+        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
+        promise.then((res)=>{
+            setLoad(false)
+            if(res.data){    
+                setLiked(true)    
+            }
+        })
+        
     }
     React.useEffect(()=>{
-        getLikes()
+        getLikes(dataPost.postId)
     },[])
     function doNothin(){
         //foi de proposito isso
@@ -71,7 +92,7 @@ export default function Post(props){
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
                     {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
-                    <p data-tip='luis,e outros' > 0 likes</p>   
+                    <p data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</p>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>

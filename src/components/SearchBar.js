@@ -25,9 +25,10 @@ function Results({ name, imgProfile, userId, setExpended }) {
 export default function SearchBar() {
     const [expended, setExpended] = React.useState(false)
     const [data, setData] = React.useState()
+    const user = JSON.parse(localStorage.user)
     const config = {
         headers: {
-            Authorization: `Bearer` // preciso descobrir onde esta o token
+            Authorization: `Bearer ${user.data.token}` // preciso descobrir onde esta o token
         }
     }
     function search(value) {
