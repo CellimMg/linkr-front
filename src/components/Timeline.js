@@ -3,63 +3,78 @@ import styled from "styled-components";
 import Post from "./Post";
 import Publication from "./Publication";
 import axios from 'axios';
+import TopBar from "./TopBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function Timeline() {
 
-    const [sessionToken, setSessionToken] = React.useState(sessionStorage.getItem('token'));
-    const [posts, setPosts] = React.useState([]);
+    const [sessionUser, setSessionUser] = React.useState(localStorage.getItem('user'));
+    const [userData, setUserData] = React.useState([]);
     const [token, setToken] = React.useState("");
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
 
-    const navigate = useNavigate();
 
     React.useEffect(() => {
 
-        if(sessionToken){
+        if(sessionUser){
             setToken({
                 headers:{
-                    Authorization: `Bearer ` + sessionToken
+                    Authorization: `Bearer ` + sessionUser.token
                 }
             })
         }
-        const promise = axios.get(`http://localhost:4000/timeline`, sessionToken);
+        const promise = axios.get(`http://localhost:4000/timeline`, sessionUser);
 
         promise.then((res) => {
             console.log(res.data);
-            setPosts(res.data);
+            setLoading(false);
+            setUserData(res.data);
         });
         promise.catch((error) => {
-            navigate('/');
+            alert("An error ocurred while trying to fetch the posts, please refresh the page");
         });
     }, []);
 
     if(refreshTimeline){
-        const tl = axios.get(`http://localhost:4000/timeline`, sessionToken);
+        const tl = axios.get(`http://localhost:4000/timeline`, sessionUser);
         tl.then((res) => {
             console.log(res.data);
-            setPosts(res.data);
+            setUserData(res.data);
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
             setRefreshTimeline(false);
-            navigate('/');
         });
     }
+
+    function loadPosts(userData, index) {
+        const postsData = {
+            userId: userData.userId,
+            userName: userData.username,
+            userImage: userData.userImage,
+            postId: userData.postId,
+            link: userData.link,
+            description: userData.description,
+            urlTitle: userData.urlTitle,
+            urlImage: userData.urlImage,
+            urlDescription: userData.urlDescription
+        }
+        return <Post postData={postsData} key={index} />
+    }
+
     return (
         <>
-            
             <GeneralContainer>
-            <ToastContainer />
+            <TopBar />
                 <h1 className="timeline">Timeline</h1>
                 <div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
                 </div>
                 <div>
-                    <Post />
+                    {userData.map((e, index) => loadPosts(e, index))}
                 </div>
-                
             </GeneralContainer>
         </>
     )
@@ -74,7 +89,7 @@ const GeneralContainer = styled.div`
     flex-direction: column;
     align-items: center;
     position: fixed;
-    z-index: -1;
+    overflow-y: scroll;
     
     .timeline {
         font-family: 'Oswald';
@@ -85,6 +100,20 @@ const GeneralContainer = styled.div`
         color: #FFFFFF;
 
         margin-bottom: 44px;
+    }
+
+    .message {
+        margin-top: 200px;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19px;
+        line-height: 23px;
+        /* identical to box height */
+
+
+        color: #FFFFFF;
+
     }
 
     @media (max-width: 768px){

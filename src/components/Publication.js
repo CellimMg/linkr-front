@@ -223,6 +223,7 @@ const Right = styled.div`
     @media screen and (max-width: 768px) {
         
         align-items: center;
+        justify-content: center;
 
         h1 {
             font-size: 17px;

@@ -13,7 +13,8 @@
     "react-scroll-to-top": "^3.0.0",
     "react-toastify": "4.1",
     "react-tooltip": "^4.2.21",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "url-metadata": "^2.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
