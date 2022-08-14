@@ -1,11 +1,13 @@
 import styled from 'styled-components';
-import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
+import {AiOutlineHeart,AiFillHeart, AiOutlineEdit} from 'react-icons/ai';
+import { IoTrashOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
-import userContext from '../context/userContext.js'
+import userContext from '../context/userContext.js';
+import Swal from 'sweetalert2'
 
 
 
@@ -19,6 +21,7 @@ export default function Post(props){
             Authorization: `Bearer ${user.data.token}` 
         }
     }
+
     function like(postId){
         setLoad(true)
         const body ={
@@ -60,12 +63,15 @@ export default function Post(props){
         })
     }
     React.useEffect(()=>{
+        console.log(dataPost.description);
         getLikes()
     },[])
     function doNothin(){
         //foi de proposito isso
     }
+
     return(
+        <>
         <Container>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
@@ -76,11 +82,16 @@ export default function Post(props){
                 </Icon>
             </Left>
             <Content>
-                <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
-                <div className='postDescription'>
-                    <p>{dataPost.description}</p>
+                <div className='topo'>
+                    <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
+                    <div>
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' /> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                    </div>
                 </div>
-                <a href={ dataPost.link} target="_blank">
+                <div className='postDescription'>
+                    {dataPost.description}
+                </div>
+                <a href={dataPost.link} target="_blank">
                     <div className='linkBody'>
                         <div className='linkText'>
                             <h2>{dataPost.urlTitle}</h2>
@@ -93,8 +104,11 @@ export default function Post(props){
                     </div>
                 </a>
             </Content>
-                
+
         </Container>
+
+        </>
+        
     )
 }
 
@@ -134,13 +148,13 @@ const Left = styled.div`
         font-weight: 700;
     }
     
-img{
-    border-radius: 26.5px;
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
+    img{
+        border-radius: 26.5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
 `
 const Icon = styled.div`
     color: #fff;
@@ -155,6 +169,12 @@ const Content = styled.div`
     width: 100%;
     height: 100%;
     font-family: 'Lato';
+
+    .topo {
+        display: flex;
+        justify-content: space-between;
+    }
+
     h1{
         font-size:20px;
         color:#fff;
@@ -165,15 +185,15 @@ const Content = styled.div`
     .postDescription {
         height: 52px;
         margin-top: 7px;
-    }
-
-    p{
+        width: 100%;
         font-size: 17px;
         color:#B7B7B7;
         line-height: 20px;
         font-weight: 400;
+        border-radius: 13px;
+        border: none;
+        background-color: '#171717';
     }
-
 
     .linkBody {
         width: 503px;
