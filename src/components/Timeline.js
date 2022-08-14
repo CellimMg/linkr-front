@@ -59,7 +59,8 @@ export default function Timeline() {
             description: userData.description,
             urlTitle: userData.urlTitle,
             urlImage: userData.urlImage,
-            urlDescription: userData.urlDescription
+            urlDescription: userData.urlDescription,
+            likes:userData.likes
         }
         return <Post postData={postsData} key={index} />
     }

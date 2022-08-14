@@ -5,8 +5,6 @@ import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
-import userContext from '../context/userContext.js'
-
 
 
 export default function Post(props){
@@ -14,8 +12,9 @@ export default function Post(props){
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
     const [load,setLoad] = React.useState(true)
-    const [countLikes, setCountLikes] = React.useState(dataPost.likes)
+    const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
     const [usersLikes,setUsersLikes]  = React.useState('')
+    
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
