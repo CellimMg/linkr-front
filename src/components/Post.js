@@ -15,6 +15,7 @@ export default function Post(props){
     const user = JSON.parse(localStorage.user)
     const [load,setLoad] = React.useState(true)
     const [countLikes, setCountLikes] = React.useState(dataPost.likes)
+    const [usersLikes,setUsersLikes]  = React.useState('')
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -33,6 +34,7 @@ export default function Post(props){
                     setLoad(false)
                     setLiked(false)
                     setCountLikes(countLikes - 1)
+                    setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -45,6 +47,7 @@ export default function Post(props){
                     setLoad(false)
                     setLiked(true)
                     setCountLikes(countLikes + 1)
+                    setUsersLikes((e)=> ['Você',...e])
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -52,15 +55,24 @@ export default function Post(props){
         }
         
     }
+    
     function getLikes(){
-        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
-        promise.then((req)=>{
-            setLoad(false)
-            if(req.data){    
-                setLiked(true)
-                
+        const whoLikes = axios.get(`${url}/likes/${dataPost.postId}/${user.data.id}`)
+        whoLikes.then((res)=>{
+            setUsersLikes(res.data.names)
+            if(res.data.names.length > 2){
+                console.log('maior')
+                setUsersLikes([res.data.names[0], res.data.names[1],`outras ${res.data.numero - 2} pessoas`])   
             }
         })
+        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
+        promise.then((res)=>{
+            setLoad(false)
+            if(res.data){    
+                setLiked(true)    
+            }
+        })
+        
     }
     React.useEffect(()=>{
         getLikes()
@@ -74,7 +86,7 @@ export default function Post(props){
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
                     {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
-                    <p data-tip='luis,e outros' > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</p>   
+                    <p data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</p>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
