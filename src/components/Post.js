@@ -35,6 +35,7 @@ export default function Post(props){
                     setLiked(false)
                     setCountLikes(countLikes - 1)
                     setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -48,6 +49,7 @@ export default function Post(props){
                     setLiked(true)
                     setCountLikes(countLikes + 1)
                     setUsersLikes((e)=> ['Você',...e])
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -56,13 +58,18 @@ export default function Post(props){
         
     }
     
-    function getLikes(){
-        const whoLikes = axios.get(`${url}/likes/${dataPost.postId}/${user.data.id}`)
+    function getLikes(postId){
+        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`)
         whoLikes.then((res)=>{
             setUsersLikes(res.data.names)
             if(res.data.names.length > 2){
-                console.log('maior')
-                setUsersLikes([res.data.names[0], res.data.names[1],`outras ${res.data.numero - 2} pessoas`])   
+                let text = ''
+                        if(res.data.numero - 2 <= 1){
+                            text = `outra ${res.data.numero - 2} pessoa`
+                        }else{
+                            text = `outras ${res.data.numero - 2} pessoas`
+                        }
+                setUsersLikes([res.data.names[0], res.data.names[1],text])   
             }
         })
         const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
@@ -75,7 +82,7 @@ export default function Post(props){
         
     }
     React.useEffect(()=>{
-        getLikes()
+        getLikes(dataPost.postId)
     },[])
     function doNothin(){
         //foi de proposito isso
