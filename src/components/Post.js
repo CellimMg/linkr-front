@@ -28,7 +28,7 @@ export default function Post(props){
             postId
         }
         if(liked){
-            const promise = axios.delete(`${url}/unlike`,{data:body,config})
+            const promise = axios.post(`${url}/unlike`,body, config)
             promise
                 .then(()=>{
                     setLoad(false)
@@ -59,7 +59,7 @@ export default function Post(props){
     }
     
     function getLikes(postId){
-        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`)
+        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`,config)
         whoLikes.then((res)=>{
             setUsersLikes(res.data.names)
             if(res.data.names.length > 2){
