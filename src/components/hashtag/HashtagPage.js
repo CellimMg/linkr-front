@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import ScrollToTop from "react-scroll-to-top";
 import TopBar from '../TopBar';
 import Trending from "./Trending.js";
+import url from '../repositories/server.js';
 
 export default function HashtagPage() {
     const [hashtagData, setHashtagData] = React.useState();
@@ -25,7 +26,8 @@ export default function HashtagPage() {
     }, [hashtag])
 
     function getPosts() {
-        const promise = axios.get(`http://localhost:4000/timeline/${hashtag}`, config)
+
+        const promise = axios.get(`${url}/timeline/${hashtag}`,config)
         promise.then((req) => {
             setHashtagData(req.data)
             setLoad(false)
