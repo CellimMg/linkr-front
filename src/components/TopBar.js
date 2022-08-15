@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import SearchBar from './SearchBar';
 import UserContext from '../context/userContext.js';
 import arrowImage from "../assets/arrow-menu.svg"
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function TopBar() {
 
@@ -36,11 +36,11 @@ export default function TopBar() {
     return (
         <Top rotate={open}>
             <Main>
-                <h1>linkr</h1>
+                <Link to='/timeline' ><h1>linkr</h1></Link>
                 <SearchBar />
                 <UserMenu>
-                    <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} alt='arrow' />
-                    <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} alt='profile'/>
+                    <img className={open ? "open arrow" : "arrow"} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} alt='arrow' />
+                    <img className='profilePicture' ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} alt='profile'/>
                 </UserMenu>
             </Main>
             <div className={open ? "menu open" : "menu"}><span ref={signoutText} onClick={() => onTapSignout()}>Logout</span></div>
@@ -93,7 +93,7 @@ const Top = styled.div`
         font-weight: 700;
     }
 
-    img:nth-child(1){
+    .arrow{
         margin: 0px 15px 10px 0px;
         width: 30px;
         height: 30px;
@@ -102,7 +102,7 @@ const Top = styled.div`
     }
 
 
-    img:nth-child(2){
+    .profilePicture{
         border-radius: 26.5px;
         width: 53px;
         height: 53px;
@@ -122,7 +122,9 @@ const Main = styled.div`
     justify-content: space-between;
     background-color: #151515;
     height: 75px;
-    
+    a{
+        text-decoration: none;
+    }
     @media (max-width: 650px) {
        margin-bottom: 20px;
     }

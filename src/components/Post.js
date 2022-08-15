@@ -122,8 +122,8 @@ export default function Post(props){
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
-                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
-                    <p data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</p>   
+                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart/>} 
+                    <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
@@ -179,7 +179,7 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 18px;
-    p{
+    h6{
         font-size: 11px;
         font-family: 'Lato';
         
@@ -199,6 +199,16 @@ const Left = styled.div`
         height: 50px;
         object-fit: cover;
         margin-bottom: 20px;
+    }
+    @media (max-width: 610px){
+        width: 40px;
+        img{
+            width: 40px;
+            height: 40px;
+        }
+        h6{
+            font-size:9px;
+        }
     }
 `
 const Icon = styled.div`
@@ -313,8 +323,19 @@ const Content = styled.div`
 
     @media (max-width: 610px){
         .linkImage > img{
-            width:100%;
+            width:75px;
                 }
-       
+        .linkText{
+            padding: 5px 1px 5px 10px;
+        }
+        .linkText > h2{
+            font-size: 11px;
+        }
+        .linkText > h4{
+            font-size: 9px;
+        }
+        .linkText > h5{
+            font-size: 9px;
+        }
     }
 `
