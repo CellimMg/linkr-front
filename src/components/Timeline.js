@@ -148,6 +148,7 @@ const GeneralContainer = styled.div`
             font-size: 33px;
             line-height: 49px;
             margin-bottom: 20px;
+            margin-top: 70px;
             margin-left: 17px;
         }
         .posts{
