@@ -66,7 +66,7 @@ export default function UserPage() {
                 </Head>
                 <Main>
                     <Content>
-                        {userData.posts.map((e, index) => loadPosts(e, index))}
+                        {userData.posts.length === 0?<p>Nothing yet</p>:(userData.posts.reverse()).map((e, index) => loadPosts(e, index))}
                     </Content>
                     <Trending />
                 </Main>
@@ -114,9 +114,19 @@ const Head = styled.div`
 const Content = styled.div`
     display: flex;
     flex-direction: column;
+    p{
+        font-family: 'Lato';
+        width: 610px;
+        font-size: 18px;
+        text-align: center;
+        color: #fff;
+    }
 
     @media(max-width:710px) {
     width: 100%;
+    p{
+        width: 100%;
+    }
 }
 `
 const Main = styled.div`

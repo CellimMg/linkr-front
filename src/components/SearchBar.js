@@ -28,12 +28,12 @@ export default function SearchBar() {
     const user = JSON.parse(localStorage.user)
     const config = {
         headers: {
-            Authorization: `Bearer ${user.data.token}` // preciso descobrir onde esta o token
+            Authorization: `Bearer ${user.data.token}` 
         }
     }
     function search(value) {
         if (value !== '') {
-            const promise = axios.get(`${url}/users?value=${value}`, config) //teste de rota
+            const promise = axios.get(`${url}/users?value=${value}`, config)
             promise.then((req) => {
                 setData(req.data)
                 setExpended(true)
@@ -124,6 +124,7 @@ const Result = styled.div`
         width: 39px;   
         border-radius: 50%;
         object-fit: cover;
+        margin:10px
     }
     p{
         font-family: 'Lato';
