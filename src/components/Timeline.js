@@ -82,7 +82,7 @@ export default function Timeline() {
                     </div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
                 </div>
-                <div>
+                <div className="posts">
                     {
                         postData.length === 0 ?
                         <h1 className="message">{message}</h1>
@@ -133,6 +133,11 @@ const GeneralContainer = styled.div`
         color: #FFFFFF;
 
     }
+    .posts{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
     @media (max-width: 768px){
 
@@ -144,6 +149,9 @@ const GeneralContainer = styled.div`
             line-height: 49px;
             margin-bottom: 20px;
             margin-left: 17px;
+        }
+        .posts{
+            width: 100%;
         }
     }
 `

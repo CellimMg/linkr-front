@@ -64,12 +64,13 @@ export default function Trending() {
 const GeneralContainer = styled.div`
     background-color: #171717;
     width: 301px;
-    height: auto;
+    height: fit-content;
     border-radius: 16px;
     padding-top: 10px;
     padding-bottom: 25px;
     padding-left: 16px;
-    margin-right: 200px;
+    margin-left: 20px;
+    
 
     h1 {
         font-size: 27px;
@@ -88,5 +89,8 @@ const GeneralContainer = styled.div`
         line-height: 35px;
         color: #FFFFFF;
     }
+    @media(max-width:930px) {
+            display: none;
+}
 
 `

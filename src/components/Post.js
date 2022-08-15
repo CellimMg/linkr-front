@@ -230,18 +230,17 @@ const Content = styled.div`
     .postDescription {
         height: 52px;
         margin-top: 7px;
-        width: 100%;
+        width: 85%;
         font-size: 17px;
         color:#B7B7B7;
         line-height: 20px;
         font-weight: 400;
         border-radius: 13px;
-        border: none;
-        
+        border: none; 
     }
 
     .linkBody {
-        width: 503px;
+        width: 100%;
         height: 155px;
         border: 1px solid #4D4D4D;
         border-radius: 11px;
@@ -249,15 +248,19 @@ const Content = styled.div`
     }
 
     .linkText {
-        width: 350px;
+        width: 70%;
         padding: 20px 26px 23px 20px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
     }
 
     .linkImage > img {
         width: 151px;
-        height: 153px;
+        height: 100%;
         object-fit:cover;
         border-radius: 0px 12px 13px 0px;
+        
     }
 
     .linkText > h2 {
@@ -266,37 +269,33 @@ const Content = styled.div`
         font-weight: 400;
         font-size: 16px;
         line-height: 19px;
-
         color: #CECECE;
-
         margin-bottom: 5px;
+        
     }
 
     .linkText > h4 {
+        width: 100%;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 11px;
         line-height: 10px;
-        
         color: #CECECE;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: ellipsis;  
+        word-break: break-all;
     }
 
     .linkText > h5 {
+        width: 100%;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 11px;
         line-height: 10px;
-        
         color: #9B9595;
-
         margin-bottom: 13px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     textarea {
@@ -304,12 +303,18 @@ const Content = styled.div`
         width: 100%;
         border: none;
         background-color: ${props => props.editable ? '#171717' : '#white'};
-
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 17px;
         line-height: 20px;
         color: #B7B7B7;
+    }
+
+    @media (max-width: 610px){
+        .linkImage > img{
+            width:100%;
+                }
+       
     }
 `
