@@ -41,7 +41,8 @@ export default function UserPage() {
             userImage: userData.picture,
             postId: e.postId,
             link: e.link,
-            description: e.description
+            description: e.description,
+            likes:parseInt(e.likes)
         }
         return <Post postData={postsData} key={index} />
     }
