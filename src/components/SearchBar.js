@@ -73,7 +73,7 @@ const Container = styled.div`
     z-index: 2;
     flex-direction: column;
     
-    @media (max-width: 650px) {
+    @media (max-width: 710px) {
         width: 100%;
         position: absolute;
         top:75px;
