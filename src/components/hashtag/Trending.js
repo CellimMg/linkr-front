@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import Hashtag from "./Hashtag.js";
+import url from '../repositories/server.js';
 
 export default function Trending() {
 
@@ -23,7 +24,7 @@ export default function Trending() {
                 }
             })
         }
-        const promise = axios.get(`http://localhost:4000/hashtags`, sessionToken);
+        const promise = axios.get(`${url}/hashtags`, sessionToken);
 
         promise.then((res) => {
             console.log(res.data);
@@ -35,7 +36,7 @@ export default function Trending() {
     }, []);
 
     if(refreshTimeline){
-        const tl = axios.get(`http://localhost:4000/hashtags`, sessionToken);
+        const tl = axios.get(`${url}/hashtags`, sessionToken);
         tl.then((res) => {
             console.log(res.data);
             setTrending(res.data);

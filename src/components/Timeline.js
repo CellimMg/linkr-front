@@ -4,9 +4,10 @@ import Post from "./Post";
 import Publication from "./Publication";
 import axios from 'axios';
 import TopBar from "./TopBar";
+import UserContext from "../../context/userContext.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
-
+import url from '../repositories/server.js';
 
 
 export default function Timeline() {
@@ -26,7 +27,7 @@ export default function Timeline() {
     }
 
     React.useEffect(() => {
-        const promise = axios.get(`http://localhost:4000/timeline`, config);
+        const promise = axios.get(`${url}/timeline`, config);
 
         promise.then((res) => {
             console.log(res.data);
@@ -43,7 +44,7 @@ export default function Timeline() {
     }, []);
 
     if(refreshTimeline){
-        const tl = axios.get(`http://localhost:4000/timeline`, config);
+        const tl = axios.get(`${url}/timeline`, config);
         tl.then((res) => {
             console.log(res.data);
             setpostData(res.data);

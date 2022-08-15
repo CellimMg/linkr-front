@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios';
 import styled from "styled-components";
 import UserContext from "../context/userContext";
+import url from '../repositories/server.js';
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Publication (props) {
@@ -33,7 +34,7 @@ export default function Publication (props) {
                 }
             })
         }
-        const promise = axios.post(`http://localhost:4000/timeline`, postData, token);
+        const promise = axios.post(`${url}/timeline`, postData, token);
 
         promise.then((res) => {
             setDisable(false);
