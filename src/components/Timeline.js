@@ -81,8 +81,8 @@ export default function Timeline() {
                         <h1>timeline</h1>
                     </div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
+                    <Trending/>
                 </div>
-                <div className="content">
                     <div className="posts">
                         {
                             postData.length === 0 ?
@@ -91,8 +91,8 @@ export default function Timeline() {
                             postData.map((e, index) => loadPosts(e, index))
                         }
                     </div>  
-                <Trending/>
-                </div>
+                
+                
                  
             </GeneralContainer>
            
@@ -141,9 +141,6 @@ const GeneralContainer = styled.div`
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    .content{
-        display: flex;
     }
     .head{
         width: 930px;
