@@ -306,6 +306,7 @@ const Content = styled.div`
         line-height: 10px;
         color: #9B9595;
         margin-bottom: 13px;
+        word-break: break-all;
     }
 
     textarea {
