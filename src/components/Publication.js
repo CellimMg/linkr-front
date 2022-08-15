@@ -162,6 +162,7 @@ const Right = styled.div`
     }
 
     textarea {
+        resize: none;
         width: 502px;
         background: #EFEFEF;
         border-radius: 5px;

@@ -15,7 +15,11 @@ export default function Post(props){
     const dataPost = (props.postData)
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
-    const [load,setLoad] = React.useState(true)
+    const [load,setLoad] = React.useState(true);
+    const [editable, setEditable] = React.useState(true);
+    const [description, setDescription] = React.useState(props.postData.description);
+
+
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -63,11 +67,30 @@ export default function Post(props){
         })
     }
     React.useEffect(()=>{
-        console.log(dataPost.description);
         getLikes()
     },[])
     function doNothin(){
         //foi de proposito isso
+    }
+
+    function handleKeyDown (event) {
+        if(event.key === 'Enter'){
+            setEditable(!editable);
+            const payload = {
+                description
+            }
+            const promise = axios.patch(`http://localhost:4000/timeline/${dataPost.postId}`, payload, config);
+            promise.then((res) => {
+                props.setRefreshTimeline(true);
+            })
+            promise.catch((err) => {
+                alert("Houve um problema, tente novamente");
+                setEditable(!editable);
+            })
+        }else if(event.key === 'Escape'){
+            setDescription(dataPost.description);
+            setEditable(!editable);
+        }
     }
 
     return(
@@ -81,15 +104,15 @@ export default function Post(props){
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
-            <Content>
+            <Content editable={editable}>
                 <div className='topo'>
                     <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                     <div>
-                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' /> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => setEditable(!editable)}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
                     </div>
                 </div>
                 <div className='postDescription'>
-                    {dataPost.description}
+                    <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} />
                 </div>
                 <a href={dataPost.link} target="_blank">
                     <div className='linkBody'>
@@ -104,7 +127,6 @@ export default function Post(props){
                     </div>
                 </a>
             </Content>
-
         </Container>
 
         </>
@@ -192,7 +214,7 @@ const Content = styled.div`
         font-weight: 400;
         border-radius: 13px;
         border: none;
-        background-color: '#171717';
+        
     }
 
     .linkBody {
@@ -252,5 +274,19 @@ const Content = styled.div`
 
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    textarea {
+        resize: none;
+        width: 100%;
+        border: none;
+        background-color: ${props => props.editable ? '#171717' : '#white'};
+
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+        color: #B7B7B7;
     }
 `
