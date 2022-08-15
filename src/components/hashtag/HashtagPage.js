@@ -9,16 +9,23 @@ import TopBar from '../TopBar';
 import Trending from "./Trending.js";
 
 export default function HashtagPage() {
-    const [hashtagData, setHashtagData] = React.useState()
-    const [load, setLoad] = React.useState(true)
-    let { hashtag } = useParams()
+    const [hashtagData, setHashtagData] = React.useState();
+    const [load, setLoad] = React.useState(true);
+    const user = JSON.parse(localStorage.user);
+    let { hashtag } = useParams();
+
+    const config ={
+        headers:{
+            Authorization: `Bearer ${user.data.token}` 
+        }
+    }
 
     React.useEffect(() => {
         getPosts()
     }, [hashtag])
 
     function getPosts() {
-        const promise = axios.get(`http://localhost:4000/timeline/${hashtag}`)
+        const promise = axios.get(`http://localhost:4000/timeline/${hashtag}`, config)
         promise.then((req) => {
             setHashtagData(req.data)
             setLoad(false)
@@ -26,12 +33,16 @@ export default function HashtagPage() {
     }
     function loadPosts(e, index) {
         const postsData = {
-            postId: hashtagData.id,
-            userId: e.userId,
-            userName: hashtagData.username,
-            userImage: hashtagData.userImage,
+            userId: hashtagData.id,
+            userName: hashtagData.name,
+            userImage: hashtagData.picture,
+            postId: e.postId,
             link: e.link,
-            description: e.description
+            description: e.description,
+            urlTitle: e.urlTitle,
+            urlImage: e.urlImage,
+            urlDescription: e.urlDescription,
+            likes:parseInt(e.likes)
         }
         return <Post postData={postsData} key={index} />
     }
@@ -46,7 +57,7 @@ export default function HashtagPage() {
                     <h1># {hashtag}</h1>
                 </Head>
                 <Content>
-                    {hashtagData.map((e, index) => loadPosts(e, index))}
+                    {hashtagData.posts.map((e, index) => loadPosts(e, index))}
                 </Content>
 
                 <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
