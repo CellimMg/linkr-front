@@ -39,8 +39,8 @@ export default function TopBar() {
                 <h1>linkr</h1>
                 <SearchBar />
                 <UserMenu>
-                    <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} />
-                    <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} />
+                    <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} alt='arrow' />
+                    <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} alt='profile'/>
                 </UserMenu>
             </Main>
             <div className={open ? "menu open" : "menu"}><span ref={signoutText} onClick={() => onTapSignout()}>Logout</span></div>
@@ -68,7 +68,7 @@ const Top = styled.div`
         right: 0%;
         width: 150px;
         height: 50px;
-        transition: top 0.5s, height 0.5s, z-index: 0.1s;
+        transition: top 0.5s, height 0.5s, z-index 0.1s;
         background-color: #151515;
         color: white;
         text-align: middle;
