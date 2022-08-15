@@ -51,21 +51,19 @@ export default function HashtagPage() {
         {load ? <></> :
         
         <Container>
-            <Leftcontainer>
                 <TopBar />
                 <Head>
                     <h1># {hashtag}</h1>
                 </Head>
+                <Main>
                 <Content>
                     {hashtagData.posts.map((e, index) => loadPosts(e, index))}
                 </Content>
+                <Trending/>
+                </Main>
 
                 <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
-            </Leftcontainer>
-
-            <Rightcontainer>
-                <Trending/>
-            </Rightcontainer>
+            
         </Container>
         }
     </>)
@@ -76,27 +74,12 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     margin-top:70px;
-`
-
-const Rightcontainer = styled.div`
-    width: 30vw;
-
-    @media(max-width:965px) {
-        display: none;
-    }
-`
-
-const Leftcontainer = styled.div`
-    width: 70vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 70px;
     flex-direction: column;
 `
 const Head = styled.div` 
-    width: 610px;
+    width: 930px;
     display: flex;
     align-items: center;
     margin-top: 50px;
@@ -107,9 +90,14 @@ const Head = styled.div`
         font-size:45px;
         color:#fff;
     }
-    
+    img{
+    border-radius: 26.5px;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin: 15px;
 }
-@media(max-width:610px) {
+@media(max-width:930px) {
     width: 100%;
 }
 `
@@ -117,7 +105,17 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
 
-    @media(max-width:610px) {
+    @media(max-width:710px) {
     width: 100%;
 }
+`
+const Main = styled.div`
+    display: flex;
+    justify-content: center;
+    @media(max-width:710px) {
+    width: 100%;
+}
+    
+      
+    
 `
