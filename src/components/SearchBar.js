@@ -121,9 +121,6 @@ const Result = styled.div`
 
     img{
         height: 39px;
-        width: 39px;
-        border-radius:50%;
-        margin:10px
         width: 39px;   
         border-radius: 50%;
         object-fit: cover;
