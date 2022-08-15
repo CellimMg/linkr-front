@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import ScrollToTop from "react-scroll-to-top";
 import TopBar from '../TopBar';
 import Trending from "./Trending.js";
-import url from '../repositories/server.js';
+import url from '../../repositories/server.js';
 
 export default function HashtagPage() {
     const [hashtagData, setHashtagData] = React.useState();
