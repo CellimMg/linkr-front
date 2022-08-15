@@ -4,7 +4,6 @@ import Post from "./Post";
 import Publication from "./Publication";
 import axios from 'axios';
 import TopBar from "./TopBar";
-import UserContext from "../../context/userContext.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import url from '../repositories/server.js';
@@ -78,11 +77,15 @@ export default function Timeline() {
             <GeneralContainer>
                 <TopBar userImage={localStorage.getItem('user') === null? <span>dummy</span> : sessionUser.data.picture_url}/>
                 <div className="head">
-                    <div className="timeline">
-                        <h1>timeline</h1>
+                    <div className="content">
+                        <div className="timeline">
+                            <h1>timeline</h1>
+                        </div>
+                        <Publication setRefreshTimeline={setRefreshTimeline}/>
                     </div>
-                    <Publication setRefreshTimeline={setRefreshTimeline}/>
-                    <Trending/>
+                    <div className="trending">
+                        <Trending />
+                    </div>
                 </div>
                     <div className="posts">
                         {
@@ -139,14 +142,25 @@ const GeneralContainer = styled.div`
 
     }
     .posts{
+        width: 930px;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: left;
     }
     .head{
         width: 930px;
+        display: flex;
+        position:relative;
+    }
+    .trending{
+        position: absolute;
+        right: 0;
+        top: 110px
     }
     @media (max-width: 930px) {
+        .posts{
+            align-items: center;
+        }
         .head{
             width: 610px;
         }
@@ -164,6 +178,7 @@ const GeneralContainer = styled.div`
         }
         .posts{
             width: 100%;
+            align-items: center;
         }
         .content{
             width:100%;

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import Hashtag from "./Hashtag.js";
-import url from '../repositories/server.js';
+import url from '../../repositories/server.js';
 
 export default function Trending() {
 
