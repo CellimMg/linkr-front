@@ -8,9 +8,9 @@ export default function Publication (props) {
 
     const [description, setDescription] = React.useState("");
     const [link, setLink] = React.useState("");
-    const [sessionToken, setSessionToken] = React.useState(sessionStorage.getItem('token'));
     const { token, setToken } = React.useContext(UserContext);
     const [disable, setDisable] = React.useState(false);
+    const [sessionUser, setSessionUser] = React.useState(JSON.parse(localStorage.getItem('user')));
 
     
     const navigate = useNavigate();
@@ -20,19 +20,20 @@ export default function Publication (props) {
         event.preventDefault();
 
         const postData = {
-            userImage: "https://emilydickinson.com.br/wp-content/uploads/2018/12/Dickinson2019-e1544576711850.jpg",
-            username: "Emily",
+            userId: sessionUser.data.id,
+            userImage: sessionUser.data.picture_url,
+            username: sessionUser.data.name,
             description,
             link
         }
-        if(sessionToken){
+        if(sessionUser){
             setToken({
                 headers:{
-                    Authorization: `Bearer ` + sessionToken
+                    Authorization: `Bearer ` + sessionUser.data.token
                 }
             })
         }
-        const promise = axios.post(`http://localhost:4000/timeline`, postData, sessionToken);
+        const promise = axios.post(`http://localhost:4000/timeline`, postData, token);
 
         promise.then((res) => {
             setDisable(false);
@@ -52,7 +53,7 @@ export default function Publication (props) {
     return (
         <Card>
             <Left>
-                <img src='https://sm.ign.com/ign_br/screenshot/default/naruto-shippuden_f134.png'></img>
+                <img src={sessionUser.data.picture_url}></img>
                 
             </Left>
             <Right>
@@ -161,6 +162,7 @@ const Right = styled.div`
     }
 
     textarea {
+        resize: none;
         width: 502px;
         background: #EFEFEF;
         border-radius: 5px;
