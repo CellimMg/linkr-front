@@ -18,6 +18,7 @@ export default function Post(props){
     const [load,setLoad] = React.useState(true);
     const [editable, setEditable] = React.useState(true);
     const [description, setDescription] = React.useState(props.postData.description);
+    const inputRef = React.useRef();
 
 
     const config ={
@@ -67,6 +68,7 @@ export default function Post(props){
         })
     }
     React.useEffect(()=>{
+        
         getLikes()
     },[])
     function doNothin(){
@@ -93,6 +95,7 @@ export default function Post(props){
         }
     }
 
+
     return(
         <>
         <Container>
@@ -108,11 +111,11 @@ export default function Post(props){
                 <div className='topo'>
                     <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                     <div>
-                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => setEditable(!editable)}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
                     </div>
                 </div>
                 <div className='postDescription'>
-                    <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} />
+                    <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef}/>
                 </div>
                 <a href={dataPost.link} target="_blank">
                     <div className='linkBody'>
