@@ -13,11 +13,10 @@ export default function App() {
 
     const [token, setToken] = React.useState(null);
     const [user, setUser] = React.useState("")
-    const [url, setUrl] = React.useState('https://driven-fast-market.herokuapp.com/');
 
     return (
 
-        <UserContext.Provider value={{ setToken, token, url, setUrl, user, setUser }}>
+        <UserContext.Provider value={{ setToken, token, user, setUser }}>
             <BrowserRouter>
                 <GlobalStyle />
 

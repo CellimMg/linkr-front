@@ -101,7 +101,7 @@ export default function Post(props){
             const payload = {
                 description
             }
-            const promise = axios.patch(`http://localhost:4000/timeline/${dataPost.postId}`, payload, config);
+            const promise = axios.patch(`${url}/timeline/${dataPost.postId}`, payload, config);
             promise.then((res) => {
                 props.setRefreshTimeline(true);
             })
