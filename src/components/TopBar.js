@@ -39,8 +39,6 @@ export default function TopBar() {
                 <h1>linkr</h1>
                 <SearchBar />
                 <UserMenu>
-                    <img className={open ? "open arrow" : "arrow"} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} />
-                    <img className='profilePicture'ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} />
                     <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} alt='arrow' />
                     <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} alt='profile'/>
                 </UserMenu>
@@ -87,19 +85,6 @@ const Top = styled.div`
         top: 100%;
         z-index: 5;
     }
-    .arrow{
-        margin: 0px 15px 10px 0px;
-        width: 30px;
-        height: 30px;
-        transition: rotateX 0.5s;
-        transform: ${props => props.rotate ? "rotateX(180deg)" : "rotateX(0deg)"};
-    }
-    .profilePicture{
-        border-radius: 26.5px;
-        width: 53px;
-        height: 53px;
-        object-fit: cover;
-    }
 
     h1{
         font-family: 'Passion One';
@@ -108,7 +93,21 @@ const Top = styled.div`
         font-weight: 700;
     }
 
-    
+    img:nth-child(1){
+        margin: 0px 15px 10px 0px;
+        width: 30px;
+        height: 30px;
+        transition: rotateX 0.5s;
+        transform: ${props => props.rotate ? "rotateX(180deg)" : "rotateX(0deg)"};
+    }
+
+
+    img:nth-child(2){
+        border-radius: 26.5px;
+        width: 53px;
+        height: 53px;
+        object-fit: cover;
+    }
 
     @media (max-width: 650px) {
       position: absolute
