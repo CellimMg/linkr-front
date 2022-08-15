@@ -41,6 +41,8 @@ export default function TopBar() {
                 <UserMenu>
                     <img className={open ? "open arrow" : "arrow"} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} />
                     <img className='profilePicture'ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} />
+                    <img className={open ? "open" : ""} ref={arrowMenu} onClick={() => handleMenu()} src={arrowImage} alt='arrow' />
+                    <img ref={imageMenu} onClick={() => handleMenu()} src={user.data.picture_url} alt='profile'/>
                 </UserMenu>
             </Main>
             <div className={open ? "menu open" : "menu"}><span ref={signoutText} onClick={() => onTapSignout()}>Logout</span></div>

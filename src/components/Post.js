@@ -1,17 +1,23 @@
 import styled from 'styled-components';
-import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai';
+import {AiOutlineHeart,AiFillHeart, AiOutlineEdit} from 'react-icons/ai';
+import { IoTrashOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
+import userContext from '../context/userContext.js';
+import Swal from 'sweetalert2';
 
 
 export default function Post(props){
     const dataPost = (props.postData)
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
-    const [load,setLoad] = React.useState(true)
+    const [load,setLoad] = React.useState(true);
+    const [editable, setEditable] = React.useState(true);
+    const [description, setDescription] = React.useState(props.postData.description);
+    const inputRef = React.useRef();
     const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
     const [usersLikes,setUsersLikes]  = React.useState('')
     
@@ -20,6 +26,7 @@ export default function Post(props){
             Authorization: `Bearer ${user.data.token}` 
         }
     }
+
     function like(postId){
         setLoad(true)
         const body ={
@@ -82,11 +89,35 @@ export default function Post(props){
     }
     React.useEffect(()=>{
         getLikes(dataPost.postId)
+
     },[])
     function doNothin(){
         //foi de proposito isso
     }
+
+    function handleKeyDown (event) {
+        if(event.key === 'Enter'){
+            setEditable(!editable);
+            const payload = {
+                description
+            }
+            const promise = axios.patch(`http://localhost:4000/timeline/${dataPost.postId}`, payload, config);
+            promise.then((res) => {
+                props.setRefreshTimeline(true);
+            })
+            promise.catch((err) => {
+                alert("Houve um problema, tente novamente");
+                setEditable(!editable);
+            })
+        }else if(event.key === 'Escape'){
+            setDescription(dataPost.description);
+            setEditable(!editable);
+        }
+    }
+
+
     return(
+        <>
         <Container>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
@@ -96,12 +127,17 @@ export default function Post(props){
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
-            <Content>
-                <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
-                <div className='postDescription'>
-                    <p>{dataPost.description}</p>
+            <Content editable={editable}>
+                <div className='topo'>
+                    <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
+                    <div>
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                    </div>
                 </div>
-                <a href={ dataPost.link} target="_blank">
+                <div className='postDescription'>
+                    <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef}/>
+                </div>
+                <a href={dataPost.link} target="_blank">
                     <div className='linkBody'>
                         <div className='linkText'>
                             <h2>{dataPost.urlTitle}</h2>
@@ -114,8 +150,10 @@ export default function Post(props){
                     </div>
                 </a>
             </Content>
-                
         </Container>
+
+        </>
+        
     )
 }
 
@@ -155,13 +193,13 @@ const Left = styled.div`
         font-weight: 700;
     }
     
-img{
-    border-radius: 26.5px;
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
+    img{
+        border-radius: 26.5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
 `
 const Icon = styled.div`
     color: #fff;
@@ -176,6 +214,12 @@ const Content = styled.div`
     width: 100%;
     height: 100%;
     font-family: 'Lato';
+
+    .topo {
+        display: flex;
+        justify-content: space-between;
+    }
+
     h1{
         font-size:20px;
         color:#fff;
@@ -186,15 +230,15 @@ const Content = styled.div`
     .postDescription {
         height: 52px;
         margin-top: 7px;
-    }
-
-    p{
+        width: 100%;
         font-size: 17px;
         color:#B7B7B7;
         line-height: 20px;
         font-weight: 400;
+        border-radius: 13px;
+        border: none;
+        
     }
-
 
     .linkBody {
         width: 503px;
@@ -253,5 +297,19 @@ const Content = styled.div`
 
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    textarea {
+        resize: none;
+        width: 100%;
+        border: none;
+        background-color: ${props => props.editable ? '#171717' : '#white'};
+
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+        color: #B7B7B7;
     }
 `

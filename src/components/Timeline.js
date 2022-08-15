@@ -7,41 +7,46 @@ import TopBar from "./TopBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 
+
+
 export default function Timeline() {
 
-    const [sessionUser, setSessionUser] = React.useState(localStorage.getItem('user'));
-    const [userData, setUserData] = React.useState([]);
+    const [sessionUser, setSessionUser] = React.useState(JSON.parse(localStorage.user));
+    const [postData, setpostData] = React.useState([]);
     const [token, setToken] = React.useState("");
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
+    const [message, setMessage] = React.useState("Loading...");
 
+    const navigate = useNavigate();
+    
+    const config ={
+        headers:{
+            Authorization: `Bearer ${sessionUser.data.token}` 
+        }
+    }
 
     React.useEffect(() => {
-
-        if(sessionUser){
-            setToken({
-                headers:{
-                    Authorization: `Bearer ` + sessionUser.token
-                }
-            })
-        }
-        const promise = axios.get(`http://localhost:4000/timeline`, sessionUser);
+        const promise = axios.get(`http://localhost:4000/timeline`, config);
 
         promise.then((res) => {
             console.log(res.data);
-            setLoading(false);
-            setUserData(res.data);
+            setpostData(res.data);
+            if(postData.length === 0){
+                setMessage("There are no posts yet");
+            }
         });
         promise.catch((error) => {
             alert("An error ocurred while trying to fetch the posts, please refresh the page");
         });
+
+
     }, []);
 
     if(refreshTimeline){
-        const tl = axios.get(`http://localhost:4000/timeline`, sessionUser);
+        const tl = axios.get(`http://localhost:4000/timeline`, config);
         tl.then((res) => {
             console.log(res.data);
-            setUserData(res.data);
+            setpostData(res.data);
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
@@ -49,32 +54,41 @@ export default function Timeline() {
         });
     }
 
-    function loadPosts(userData, index) {
+    function loadPosts(postData, index) {
         const postsData = {
-            userId: userData.userId,
-            userName: userData.username,
-            userImage: userData.userImage,
-            postId: userData.postId,
-            link: userData.link,
-            description: userData.description,
-            urlTitle: userData.urlTitle,
-            urlImage: userData.urlImage,
-            urlDescription: userData.urlDescription,
-            likes:userData.likes
+            userId: postData.userId,
+            userName: postData.username,
+            userImage: postData.userImage,
+            postId: postData.postId,
+            link: postData.link,
+            description: postData.description,
+            urlTitle: postData.urlTitle,
+            urlImage: postData.urlImage,
+            urlDescription: postData.urlDescription,
+            likes:postData.likes
+
         }
-        return <Post postData={postsData} key={index} />
+        return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
     }
 
     return (
         <>
             <GeneralContainer>
-            <TopBar />
-                <h1 className="timeline">Timeline</h1>
+                <TopBar userImage={localStorage.getItem('user') === null? <span>dummy</span> : sessionUser.data.picture_url}/>
+
                 <div>
+                    <div className="timeline">
+                        <h1>timeline</h1>
+                    </div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
                 </div>
                 <div>
-                    {userData.map((e, index) => loadPosts(e, index))}
+                    {
+                        postData.length === 0 ?
+                        <h1 className="message">{message}</h1>
+                        :
+                        postData.map((e, index) => loadPosts(e, index))
+                    }
                 </div>
             </GeneralContainer>
         </>
@@ -99,8 +113,11 @@ const GeneralContainer = styled.div`
         font-size: 43px;
         line-height: 64px;
         color: #FFFFFF;
-
+        width: 100%;
         margin-bottom: 44px;
+        display: flex;
+        align-items: baseline;
+        align-text: baseline;
     }
 
     .message {
@@ -120,7 +137,7 @@ const GeneralContainer = styled.div`
     @media (max-width: 768px){
 
         padding-top: 80px;
-        align-items: baseline;
+        
 
         .timeline {
             font-size: 33px;

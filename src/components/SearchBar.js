@@ -116,16 +116,21 @@ const Itens = styled.div`
 `
 const Result = styled.div`
     display: flex;
-    height: 60px;
     align-items: center;
+    height: 60px;
+
     img{
         height: 39px;
         width: 39px;
         border-radius:50%;
         margin:10px
+        width: 39px;   
+        border-radius: 50%;
+        object-fit: cover;
     }
     p{
         font-family: 'Lato';
         font-size:19px;
+        line-height: 23px;
     }
 `
