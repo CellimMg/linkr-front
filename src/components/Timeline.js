@@ -6,6 +6,7 @@ import axios from 'axios';
 import TopBar from "./TopBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import Trending from "./hashtag/Trending";
 
 
 
@@ -75,28 +76,31 @@ export default function Timeline() {
         <>
             <GeneralContainer>
                 <TopBar userImage={localStorage.getItem('user') === null? <span>dummy</span> : sessionUser.data.picture_url}/>
-
-                <div>
+                <div className="head">
                     <div className="timeline">
                         <h1>timeline</h1>
                     </div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
                 </div>
-                <div className="posts">
-                    {
-                        postData.length === 0 ?
-                        <h1 className="message">{message}</h1>
-                        :
-                        postData.map((e, index) => loadPosts(e, index))
-                    }
+                <div className="content">
+                    <div className="posts">
+                        {
+                            postData.length === 0 ?
+                            <h1 className="message">{message}</h1>
+                            :
+                            postData.map((e, index) => loadPosts(e, index))
+                        }
+                    </div>  
+                <Trending/>
                 </div>
+                 
             </GeneralContainer>
+           
         </>
     )
 }
 
 const GeneralContainer = styled.div`
-    background-color: #333333;
     width: 100%;
     height: 100vh;
     padding-top: 150px;
@@ -138,21 +142,37 @@ const GeneralContainer = styled.div`
         flex-direction: column;
         align-items: center;
     }
-
-    @media (max-width: 768px){
-
-        padding-top: 80px;
+    .content{
+        display: flex;
+    }
+    .head{
+        width: 930px;
+    }
+    @media (max-width: 930px) {
+        .head{
+            width: 610px;
+        }
         
+    }
+    @media (max-width: 768px){
+        padding-top: 80px;
 
         .timeline {
             font-size: 33px;
             line-height: 49px;
             margin-bottom: 20px;
             margin-top: 70px;
-            margin-left: 17px;
+            padding-left: 10px;
         }
         .posts{
             width: 100%;
         }
+        .content{
+            width:100%;
+        }
+        .head{
+            width: 100%;
+        }
     }
+    
 `
