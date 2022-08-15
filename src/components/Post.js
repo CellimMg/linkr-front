@@ -7,8 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
 import userContext from '../context/userContext.js';
-import Swal from 'sweetalert2'
-
+import Swal from 'sweetalert2';
 
 
 export default function Post(props){
@@ -19,8 +18,9 @@ export default function Post(props){
     const [editable, setEditable] = React.useState(true);
     const [description, setDescription] = React.useState(props.postData.description);
     const inputRef = React.useRef();
-
-
+    const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
+    const [usersLikes,setUsersLikes]  = React.useState('')
+    
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -34,11 +34,14 @@ export default function Post(props){
             postId
         }
         if(liked){
-            const promise = axios.delete(`${url}/unlike`,{data:body,config})
+            const promise = axios.post(`${url}/unlike`,body, config)
             promise
                 .then(()=>{
                     setLoad(false)
                     setLiked(false)
+                    setCountLikes(countLikes - 1)
+                    setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -50,6 +53,9 @@ export default function Post(props){
                 .then(()=>{
                     setLoad(false)
                     setLiked(true)
+                    setCountLikes(countLikes + 1)
+                    setUsersLikes((e)=> ['Você',...e])
+                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -57,19 +63,33 @@ export default function Post(props){
         }
         
     }
-    function getLikes(){
-        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)// user id para usar
-        promise.then((req)=>{
-            setLoad(false)
-            if(req.data){    
-                setLiked(true)
-                
+    
+    function getLikes(postId){
+        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`,config)
+        whoLikes.then((res)=>{
+            setUsersLikes(res.data.names)
+            if(res.data.names.length > 2){
+                let text = ''
+                        if(res.data.quantyLikes - 2 <= 1){
+                            text = `outra ${res.data.quantyLikes - 2} pessoa`
+                        }else{
+                            text = `outras ${res.data.quantyLikes - 2} pessoas`
+                        }
+                setUsersLikes([res.data.names[0], res.data.names[1],text])   
             }
         })
+        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
+        promise.then((res)=>{
+            setLoad(false)
+            if(res.data){    
+                setLiked(true)    
+            }
+        })
+        
     }
     React.useEffect(()=>{
-        
-        getLikes()
+        getLikes(dataPost.postId)
+
     },[])
     function doNothin(){
         //foi de proposito isso
@@ -102,8 +122,8 @@ export default function Post(props){
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
-                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart />} 
-                    <p data-tip='luis,e outros' > 0 likes</p>   
+                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart/>} 
+                    <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
             </Left>
@@ -159,7 +179,7 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 18px;
-    p{
+    h6{
         font-size: 11px;
         font-family: 'Lato';
         
@@ -179,6 +199,16 @@ const Left = styled.div`
         height: 50px;
         object-fit: cover;
         margin-bottom: 20px;
+    }
+    @media (max-width: 610px){
+        width: 40px;
+        img{
+            width: 40px;
+            height: 40px;
+        }
+        h6{
+            font-size:9px;
+        }
     }
 `
 const Icon = styled.div`
@@ -210,18 +240,17 @@ const Content = styled.div`
     .postDescription {
         height: 52px;
         margin-top: 7px;
-        width: 100%;
+        width: 85%;
         font-size: 17px;
         color:#B7B7B7;
         line-height: 20px;
         font-weight: 400;
         border-radius: 13px;
-        border: none;
-        
+        border: none; 
     }
 
     .linkBody {
-        width: 503px;
+        width: 100%;
         height: 155px;
         border: 1px solid #4D4D4D;
         border-radius: 11px;
@@ -229,15 +258,19 @@ const Content = styled.div`
     }
 
     .linkText {
-        width: 350px;
+        width: 70%;
         padding: 20px 26px 23px 20px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
     }
 
     .linkImage > img {
         width: 151px;
-        height: 153px;
+        height: 100%;
         object-fit:cover;
         border-radius: 0px 12px 13px 0px;
+        
     }
 
     .linkText > h2 {
@@ -246,37 +279,33 @@ const Content = styled.div`
         font-weight: 400;
         font-size: 16px;
         line-height: 19px;
-
         color: #CECECE;
-
         margin-bottom: 5px;
+        
     }
 
     .linkText > h4 {
+        width: 100%;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 11px;
         line-height: 10px;
-        
         color: #CECECE;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: ellipsis;  
+        word-break: break-all;
     }
 
     .linkText > h5 {
+        width: 100%;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 11px;
         line-height: 10px;
-        
         color: #9B9595;
-
         margin-bottom: 13px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     textarea {
@@ -284,12 +313,29 @@ const Content = styled.div`
         width: 100%;
         border: none;
         background-color: ${props => props.editable ? '#171717' : '#white'};
-
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
         font-size: 17px;
         line-height: 20px;
         color: #B7B7B7;
+    }
+
+    @media (max-width: 610px){
+        .linkImage > img{
+            width:75px;
+                }
+        .linkText{
+            padding: 5px 1px 5px 10px;
+        }
+        .linkText > h2{
+            font-size: 11px;
+        }
+        .linkText > h4{
+            font-size: 9px;
+        }
+        .linkText > h5{
+            font-size: 9px;
+        }
     }
 `

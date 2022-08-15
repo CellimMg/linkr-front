@@ -8,6 +8,7 @@ import UserContext from "../../context/userContext.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import url from '../repositories/server.js';
+import Trending from "./hashtag/Trending";
 
 
 export default function Timeline() {
@@ -65,7 +66,9 @@ export default function Timeline() {
             description: postData.description,
             urlTitle: postData.urlTitle,
             urlImage: postData.urlImage,
-            urlDescription: postData.urlDescription
+            urlDescription: postData.urlDescription,
+            likes:postData.likes
+
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
     }
@@ -74,28 +77,31 @@ export default function Timeline() {
         <>
             <GeneralContainer>
                 <TopBar userImage={localStorage.getItem('user') === null? <span>dummy</span> : sessionUser.data.picture_url}/>
-
-                <div>
+                <div className="head">
                     <div className="timeline">
                         <h1>timeline</h1>
                     </div>
                     <Publication setRefreshTimeline={setRefreshTimeline}/>
                 </div>
-                <div>
-                    {
-                        postData.length === 0 ?
-                        <h1 className="message">{message}</h1>
-                        :
-                        postData.map((e, index) => loadPosts(e, index))
-                    }
+                <div className="content">
+                    <div className="posts">
+                        {
+                            postData.length === 0 ?
+                            <h1 className="message">{message}</h1>
+                            :
+                            postData.map((e, index) => loadPosts(e, index))
+                        }
+                    </div>  
+                <Trending/>
                 </div>
+                 
             </GeneralContainer>
+           
         </>
     )
 }
 
 const GeneralContainer = styled.div`
-    background-color: #333333;
     width: 100%;
     height: 100vh;
     padding-top: 150px;
@@ -132,17 +138,42 @@ const GeneralContainer = styled.div`
         color: #FFFFFF;
 
     }
-
-    @media (max-width: 768px){
-
-        padding-top: 80px;
+    .posts{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .content{
+        display: flex;
+    }
+    .head{
+        width: 930px;
+    }
+    @media (max-width: 930px) {
+        .head{
+            width: 610px;
+        }
         
+    }
+    @media (max-width: 768px){
+        padding-top: 80px;
 
         .timeline {
             font-size: 33px;
             line-height: 49px;
             margin-bottom: 20px;
-            margin-left: 17px;
+            margin-top: 70px;
+            padding-left: 10px;
+        }
+        .posts{
+            width: 100%;
+        }
+        .content{
+            width:100%;
+        }
+        .head{
+            width: 100%;
         }
     }
+    
 `

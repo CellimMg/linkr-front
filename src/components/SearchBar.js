@@ -1,65 +1,66 @@
-import {BsSearch} from 'react-icons/bs'
-import {DebounceInput} from 'react-debounce-input'
+import { BsSearch } from 'react-icons/bs'
+import { DebounceInput } from 'react-debounce-input'
 import styled from 'styled-components';
 import React from 'react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import url from '../repositories/server.js'
 
 
 
-function Results({name,imgProfile,userId,setExpended}){
+function Results({ name, imgProfile, userId, setExpended }) {
     const navigate = useNavigate()
-    function openProfile(id){
+    function openProfile(id) {
         setExpended(false)
         navigate(`/user/${id}`)
     }
     return (
-        <Result onClick={()=> openProfile(userId)} >
-            <img src={imgProfile} alt='profile'/>
+        <Result onClick={() => openProfile(userId)} >
+            <img src={imgProfile} alt='profile' />
             <p>{name}</p>
         </Result>
     )
 }
 
-export default function SearchBar(){
-    const [expended,setExpended] = React.useState(false)
-    const [data, setData] =React.useState()
-    const config ={
-        headers:{
-            Authorization: `Bearer` // preciso descobrir onde esta o token
+export default function SearchBar() {
+    const [expended, setExpended] = React.useState(false)
+    const [data, setData] = React.useState()
+    const user = JSON.parse(localStorage.user)
+    const config = {
+        headers: {
+            Authorization: `Bearer ${user.data.token}` 
         }
     }
-    function search(value){
-        if(value !== ''){
-            const promise = axios.get(`${url}/users?value=${value}`,config) //teste de rota
-            promise.then((req)=> {
+    function search(value) {
+        if (value !== '') {
+            const promise = axios.get(`${url}/users?value=${value}`, config)
+            promise.then((req) => {
                 setData(req.data)
                 setExpended(true)
             })
 
-        }else{
+        } else {
             setExpended(false)
-        }     
+        }
     }
     return (
         <Container >
-        <Search>
-            <DebounceInput
-                minLength={3}
-                debounceTimeout={300}
-                onChange={e => search(e.target.value)}
-                placeholder='Search for people'
-                onBlur={()=> setTimeout(()=> setExpended(false),500)}
-            ></DebounceInput>
-            <BsSearch color='#C6C6C6' size='20px'></BsSearch>   
-        </Search>
-        {expended?
-        <Itens>
-            {data.map((e,index)=><Results name={e.name} imgProfile={e.picture_url} userId={e.id} key={index} setExpended={setExpended}/>)}
-        </Itens> 
-                : <></>} 
-    </Container> 
+            <Search>
+                <DebounceInput
+                    minLength={3}
+                    debounceTimeout={300}
+                    onChange={e => search(e.target.value)}
+                    placeholder='Search for people'
+                    onBlur={() => setTimeout(() => setExpended(false), 500)}
+                ></DebounceInput>
+                <BsSearch color='#C6C6C6' size='20px'></BsSearch>
+            </Search>
+            {expended ?
+                <Itens>
+                    {data.map((e, index) => <Results name={e.name} imgProfile={e.picture_url} userId={e.id} key={index} setExpended={setExpended} />)}
+                </Itens>
+                : <></>}
+        </Container>
     )
 }
 
@@ -72,12 +73,11 @@ const Container = styled.div`
     z-index: 2;
     flex-direction: column;
     
-    @media (max-width: 650px) {
+    @media (max-width: 710px) {
         width: 100%;
         position: absolute;
         top:75px;
         left:0
-
     }
    
 `
@@ -116,15 +116,19 @@ const Itens = styled.div`
 `
 const Result = styled.div`
     display: flex;
-    height: 60px;
     align-items: center;
+    height: 60px;
+
     img{
         height: 39px;
-        width: 39px;
-        margin: 10px;
+        width: 39px;   
+        border-radius: 50%;
+        object-fit: cover;
+        margin:10px
     }
     p{
         font-family: 'Lato';
         font-size:19px;
+        line-height: 23px;
     }
 `

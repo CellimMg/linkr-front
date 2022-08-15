@@ -10,16 +10,24 @@ import Trending from "./Trending.js";
 import url from '../repositories/server.js';
 
 export default function HashtagPage() {
-    const [hashtagData, setHashtagData] = React.useState()
-    const [load, setLoad] = React.useState(true)
-    let { hashtag } = useParams()
+    const [hashtagData, setHashtagData] = React.useState();
+    const [load, setLoad] = React.useState(true);
+    const user = JSON.parse(localStorage.user);
+    let { hashtag } = useParams();
+
+    const config ={
+        headers:{
+            Authorization: `Bearer ${user.data.token}` 
+        }
+    }
 
     React.useEffect(() => {
         getPosts()
     }, [hashtag])
 
     function getPosts() {
-        const promise = axios.get(`${url}/timeline/${hashtag}`)
+
+        const promise = axios.get(`${url}/timeline/${hashtag}`,config)
         promise.then((req) => {
             setHashtagData(req.data)
             setLoad(false)
@@ -27,12 +35,16 @@ export default function HashtagPage() {
     }
     function loadPosts(e, index) {
         const postsData = {
-            postId: hashtagData.id,
-            userId: e.userId,
-            userName: hashtagData.username,
-            userImage: hashtagData.userImage,
+            userId: hashtagData.id,
+            userName: hashtagData.name,
+            userImage: hashtagData.picture,
+            postId: e.postId,
             link: e.link,
-            description: e.description
+            description: e.description,
+            urlTitle: e.urlTitle,
+            urlImage: e.urlImage,
+            urlDescription: e.urlDescription,
+            likes:parseInt(e.likes)
         }
         return <Post postData={postsData} key={index} />
     }
@@ -41,21 +53,19 @@ export default function HashtagPage() {
         {load ? <></> :
         
         <Container>
-            <Leftcontainer>
                 <TopBar />
                 <Head>
                     <h1># {hashtag}</h1>
                 </Head>
+                <Main>
                 <Content>
-                    {hashtagData.map((e, index) => loadPosts(e, index))}
+                    {hashtagData.posts.map((e, index) => loadPosts(e, index))}
                 </Content>
+                <Trending/>
+                </Main>
 
                 <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
-            </Leftcontainer>
-
-            <Rightcontainer>
-                <Trending/>
-            </Rightcontainer>
+            
         </Container>
         }
     </>)
@@ -66,27 +76,12 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     margin-top:70px;
-`
-
-const Rightcontainer = styled.div`
-    width: 30vw;
-
-    @media(max-width:965px) {
-        display: none;
-    }
-`
-
-const Leftcontainer = styled.div`
-    width: 70vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 70px;
     flex-direction: column;
 `
 const Head = styled.div` 
-    width: 610px;
+    width: 930px;
     display: flex;
     align-items: center;
     margin-top: 50px;
@@ -97,9 +92,14 @@ const Head = styled.div`
         font-size:45px;
         color:#fff;
     }
-    
+    img{
+    border-radius: 26.5px;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin: 15px;
 }
-@media(max-width:610px) {
+@media(max-width:930px) {
     width: 100%;
 }
 `
@@ -107,7 +107,17 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
 
-    @media(max-width:610px) {
+    @media(max-width:710px) {
     width: 100%;
 }
+`
+const Main = styled.div`
+    display: flex;
+    justify-content: center;
+    @media(max-width:710px) {
+    width: 100%;
+}
+    
+      
+    
 `

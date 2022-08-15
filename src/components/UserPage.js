@@ -5,7 +5,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import ScrollToTop from "react-scroll-to-top";
 import TopBar from './TopBar';
-import url from '../repositories/server.js'
+import url from '../repositories/server.js';
+import Trending from '../components/hashtag/Trending.js'
 import UserContext from '../context/userContext.js';
 
 
@@ -30,6 +31,7 @@ export default function UserPage() {
         promise
             .then((req) => {
                 setUserData(req.data)
+                console.log(req.data)
                 setLoad(false)
             })
             .catch(error =>console.log(error.response.data))
@@ -41,7 +43,11 @@ export default function UserPage() {
             userImage: userData.picture,
             postId: e.postId,
             link: e.link,
-            description: e.description
+            description: e.description,
+            urlTitle: e.urlTitle,
+            urlImage: e.urlImage,
+            urlDescription: e.urlDescription,
+            likes:parseInt(e.likes)
         }
         return <Post postData={postsData} key={index} />
     }
@@ -51,18 +57,25 @@ export default function UserPage() {
         <>
             <TopBar />
         </> :
+        <>
             <Container>
                 <TopBar />
                 <Head>
                     <img src={userData.picture} alt='perfil'></img>
                     <h1>{userData.name}'s posts</h1>
                 </Head>
-                <Content>
-                    {userData.posts.map((e, index) => loadPosts(e, index))}
-                </Content>
-
+                <Main>
+                    <Content>
+                        {userData.posts.length === 0?<p>Nothing yet</p>:(userData.posts.reverse()).map((e, index) => loadPosts(e, index))}
+                    </Content>
+                    <Trending />
+                </Main>
+                
+                
                 <ScrollToTop smooth style={{ background: "rgba(35, 34, 34,0.3)" }} />
-            </Container>}
+            </Container>
+            
+            </>}
     </>)
 }
 
@@ -76,7 +89,7 @@ const Container = styled.div`
     flex-direction: column;
 `
 const Head = styled.div` 
-    width: 610px;
+    width: 930px;
     display: flex;
     align-items: center;
     margin-top: 50px;
@@ -94,15 +107,35 @@ const Head = styled.div`
     object-fit: cover;
     margin: 15px;
 }
-@media(max-width:610px) {
+@media(max-width:930px) {
     width: 100%;
 }
 `
 const Content = styled.div`
     display: flex;
     flex-direction: column;
+    p{
+        font-family: 'Lato';
+        width: 610px;
+        font-size: 18px;
+        text-align: center;
+        color: #fff;
+    }
 
-    @media(max-width:610px) {
+    @media(max-width:710px) {
+    width: 100%;
+    p{
+        width: 100%;
+    }
+}
+`
+const Main = styled.div`
+    display: flex;
+    justify-content: center;
+    @media(max-width:710px) {
     width: 100%;
 }
+    
+      
+    
 `
