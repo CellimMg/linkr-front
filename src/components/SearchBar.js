@@ -121,7 +121,8 @@ const Result = styled.div`
     img{
         height: 39px;
         width: 39px;
-        margin: 10px;
+        border-radius:50%;
+        margin:10px
     }
     p{
         font-family: 'Lato';
