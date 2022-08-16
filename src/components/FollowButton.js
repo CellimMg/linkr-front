@@ -6,8 +6,9 @@ import styled from "styled-components";
 //POST (no post vai os dados de follower e followed, e tbm o status 'follows'como TRUE ou FALSE)
 //o back vai adicionar ou deletar a relacao na tabela 'follows'
 
-export default function FollowButton(follower, followed) {
+export default function FollowButton( followedId ) {
     const [sessionUser, setSessionUser] = React.useState(JSON.parse(localStorage.user));
+    const user = JSON.parse(localStorage.user);
     const [refreshButton, setRefreshButton] = React.useState(false); 
     const [follows, setFollow] = React.useState(false);
 
@@ -18,7 +19,13 @@ export default function FollowButton(follower, followed) {
     }
 
     React.useEffect(() => {
-        const promise = axios.get(`${url}/follow`, config);
+
+        const followData = {
+            userId: user.data.id,
+            followedId: followedId
+        }
+
+        const promise = axios.get(`${url}/follow`, followData, config);
         promise.then((res) => {
             console.log(res.data);
             setFollow(res.data);
@@ -32,11 +39,11 @@ export default function FollowButton(follower, followed) {
     function toggleFollow() {
         const followData = {
             follows: follows,
-            follower: follower,
-            followed: followed
+            userId: user.data.id,
+            followedId: followedId
         }
 
-        const promise = axios.post(`${url}`/followed, followData, config);
+        const promise = axios.post(`${url}/follow`, followData, config);
         promise.then((res) => {
             console.log(res.data);
             setRefreshButton(true);
@@ -44,13 +51,14 @@ export default function FollowButton(follower, followed) {
     }
 
     if(refreshButton){
-        const tl = axios.get(`${url}/follow`, config);
-        tl.then((res) => {
+        const button = axios.get(`${url}/follow`, config);
+        button.then((res) => {
             console.log(res.data);
             setFollow(res.data);
             setRefreshButton(false);
         });
-        tl.catch((error) => {
+        button.catch((error) => {
+            console.log(error);
             setRefreshButton(false);
         });
     }
@@ -59,9 +67,9 @@ export default function FollowButton(follower, followed) {
         <Button follows={follows} Onclick={toggleFollow()}>
             { follows ? <h3>Unfollow</h3> : <h3>Follow</h3> }
         </Button>
-
     );
 }
+
 
 function buttonColor(follows) {
     if (follows) return '#FFFFFF';
