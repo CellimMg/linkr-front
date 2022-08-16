@@ -134,13 +134,17 @@ body,
     width: 100%;
     height: 100%;
     background-color: #333333;
+    font-family: 'Lato', sans-serif;
 }
 
 *, span {
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
     font-weight: 400;
-}
+},
+.swal-overlay {
+    font-family: 'Lato', sans-serif;
+ }
 `;
 
 
