@@ -15,21 +15,16 @@ export default function FollowButton( { followedId } ) {
 
     const config ={
         headers:{
-            Authorization: `Bearer ${sessionUser.data.token}` 
+            Authorization: `Bearer ${user.data.token}` 
         }
     }
 
     React.useEffect(() => {
 
-        const followData = {
-            userId: user.data.id,
-            followedId
-        }
-
-        const promise = axios.get(`${url}/follow`, followData, config);
+        const promise = axios.get(`${url}/follow/${followedId}`, config);
         promise.then((res) => {
             console.log(res.data);
-            setFollow(res.data);
+            setFollow(res.data.relation);
         });
         promise.catch((error) => {
             console.log(error);
