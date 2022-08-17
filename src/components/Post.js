@@ -147,13 +147,6 @@ export default function Post(props){
               })
         )
     }
-    function comments(){
-        if(expendedComments){
-            setExpendedComments(false)
-        }else{
-            setExpendedComments(true)
-        }
-    }
 
     return(
         <>
@@ -166,7 +159,7 @@ export default function Post(props){
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
                 
-                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended /></>:<Comments setExpendedComments={setExpendedComments}
+                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended postId={dataPost.postId} dataPost={dataPost}/></>:<Comments setExpendedComments={setExpendedComments}
                     expendedComments={expendedComments}/>}
                
             </Left>

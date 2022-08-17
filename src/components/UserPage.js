@@ -48,6 +48,7 @@ export default function UserPage() {
             urlDescription: e.urlDescription,
             likes:parseInt(e.likes),
             whoLikes: e.whoLikes,
+            whoComments:e.whoComments
         }
        
         

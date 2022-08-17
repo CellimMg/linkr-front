@@ -67,7 +67,8 @@ export default function Timeline() {
             urlImage: postData.urlImage,
             urlDescription: postData.urlDescription,
             likes:postData.likes,
-            whoLikes: postData.whoLikes
+            whoLikes: postData.whoLikes,
+            whoComments:postData.whoComments
 
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
