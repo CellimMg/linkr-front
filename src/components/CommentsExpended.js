@@ -7,12 +7,13 @@ import url from '../repositories/server.js';
 function Comment({data,userPost}){
     const user = JSON.parse(localStorage.user)
     let info = ''
-    if(data.id === userPost){
+    
+    if(parseInt(data.userId) ===parseInt(userPost)){
         info = "• post's author"
     }
     return (
         <UserComment>
-            <img className='profile' src={user.data.picture_url}  />
+            <img className='profile' src={user.data.picture_url} alt='profile' />
             <CommentContent>
                 <HeadComment>
                     <h1>{data.author}</h1>
@@ -27,8 +28,9 @@ function Comment({data,userPost}){
 export default function CommentsExpended({postId,dataPost}){
     const user = JSON.parse(localStorage.user)
     const [textComment, setTextComment] = React.useState('')
-    const [postData,setPostData] = React.useState(dataPost);
     const [comments, setCommets] = React.useState(dataPost.whoComments)
+    const [load,setLoad] = React.useState(false);
+
     const noComments = comments !== null
     const config ={
         headers:{
@@ -37,6 +39,7 @@ export default function CommentsExpended({postId,dataPost}){
     }
     function sendComment(event){
         event.preventDefault();
+        setLoad(true)
         const body = {
             userId: user.data.id,
             postId: postId,
@@ -46,11 +49,22 @@ export default function CommentsExpended({postId,dataPost}){
         promise
             .then((res) => {
                 setTextComment('')
-                setCommets(e => [{
-                    author:user.data.name,
-                    id:user.data.id,
-                    text:textComment 
-                },...e])
+                if(!noComments){
+                    setCommets([{
+                        author:user.data.name,
+                        userId:user.data.id,
+                        text:textComment 
+                    }])
+                    setLoad(false)
+                }else{
+                    setCommets(e => [{
+                        author:user.data.name,
+                        userId:user.data.id,
+                        text:textComment 
+                    },...e])
+                    setLoad(false)
+                }
+               
             })
             .catch(res => console.log(res.response))
     }
@@ -58,7 +72,10 @@ export default function CommentsExpended({postId,dataPost}){
         <>
         <Container>
             <Content>
-                {noComments? comments.map((e,index) => <Comment data={e} userPost={dataPost.userId}/>): <>no comments yet</>}
+                {noComments? 
+                    comments.map((e,index) => <Comment data={e} userPost={dataPost.userId} key={index}/>)
+                    :
+                     <h4>No comments yet...</h4>}
             </Content>
             <DoComment>
                 <img className='profile' src={user.data.picture_url} alt='profile'/>
@@ -67,7 +84,7 @@ export default function CommentsExpended({postId,dataPost}){
                         value={textComment}
                         onChange={(e)=>setTextComment(e.target.value)}
                         placeholder='write a comment...' />
-                    <button><FiSend color='#fff' size={15} /></button>
+                    <button disabled={load}><FiSend color='#fff' size={15} /></button>
                 </Forms>
 
             </DoComment>
@@ -107,6 +124,12 @@ const DoComment = styled.div`
 const Content = styled.div`
     height: 200px;
     overflow: scroll;
+    h4{
+        color:#fff;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+    }
 `
 const Forms = styled.form`
     background-color: #252525;

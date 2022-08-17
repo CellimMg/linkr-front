@@ -2,7 +2,9 @@ import React from 'react';
 import {AiOutlineComment} from 'react-icons/ai'
 import styled from 'styled-components';
 
-export default function Comments({setExpendedComments,expendedComments}){
+export default function Comments({setExpendedComments,expendedComments,numberCommnets}){
+    const [quantyComments, setQuantyCommnets] = React.useState(numberCommnets)
+    
     function comments(){
         if(expendedComments){
             setExpendedComments(false)
@@ -15,7 +17,7 @@ export default function Comments({setExpendedComments,expendedComments}){
         <Icon>
             <AiOutlineComment/>
         </Icon>
-       <h6>10 comments</h6>
+       <h6>{quantyComments} comments</h6>
     </Container>)
 }
 
