@@ -3,12 +3,7 @@ import axios from 'axios';
 import styled from "styled-components";
 import url from '../repositories/server.js';
 
-//requisicoes GET >> seta follows como TRUE ou FALSE
-//POST (no post vai os dados de follower e followed, e tbm o status 'follows'como TRUE ou FALSE)
-//o back vai adicionar ou deletar a relacao na tabela 'follows'
-
 export default function FollowButton( { followedId } ) {
-    const [sessionUser, setSessionUser] = React.useState(JSON.parse(localStorage.user));
     const user = JSON.parse(localStorage.user);
     const [refreshButton, setRefreshButton] = React.useState(false); 
     const [follows, setFollow] = React.useState(false);
