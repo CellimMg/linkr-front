@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sweetalert2/theme-dark": "^5.0.11",
+    "@sweetalert2/themes": "^5.0.11",
     "axios": "^0.27.2",
     "react": "^17.0.2",
     "react-debounce-input": "^3.3.0",
@@ -14,7 +16,7 @@
     "react-toastify": "4.1",
     "react-tooltip": "^4.2.21",
     "styled-components": "^5.3.5",
-    "sweetalert2": "^11.4.26",
+    "sweetalert2": "^11.4.27",
     "url-metadata": "^2.5.0"
   },
   "scripts": {

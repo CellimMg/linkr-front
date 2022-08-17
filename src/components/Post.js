@@ -8,6 +8,8 @@ import axios from 'axios';
 import url from '../repositories/server.js';
 import userContext from '../context/userContext.js';
 import Swal from 'sweetalert2';
+import Comments from './Comments.js';
+import CommentsExpended from './CommentsExpended.js';
 
 
 export default function Post(props){
@@ -20,6 +22,7 @@ export default function Post(props){
     const inputRef = React.useRef();
     const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
     const [usersLikes,setUsersLikes]  = React.useState('')
+    const [expendedComments , setExpendedComments] = React.useState(false)
     
     const config ={
         headers:{
@@ -114,11 +117,49 @@ export default function Post(props){
             setEditable(!editable);
         }
     }
+    function deleteModal () {
+        return (
+            Swal.fire({
+                title: "<h5 style='color:white'>" + 'Are you sure you want to delete this post?' + "</h5>",
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#333333',
+                fontColor: 'white',
+                confirmButtonColor: '#1877F2',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
+                        props.setRefreshTimeline(true);
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                          )
+                    }).catch((err) => {
+                        Swal.fire(
+                            'Erro!',
+                            'Houve um erro ao tentar deletar seu post.',
+                            'error'
+                        )
+                    })
 
+                }
+              })
+        )
+    }
+    function comments(){
+        if(expendedComments){
+            setExpendedComments(false)
+        }else{
+            setExpendedComments(true)
+        }
+    }
 
     return(
         <>
-        <Container>
+        <Container comments={expendedComments? '310px': '10px'}>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
@@ -126,12 +167,16 @@ export default function Post(props){
                     <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
+                
+                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended /></>:<Comments setExpendedComments={setExpendedComments}
+                    expendedComments={expendedComments}/>}
+               
             </Left>
             <Content editable={editable}>
                 <div className='topo'>
                     <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                     <div>
-                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
                     </div>
                 </div>
                 <div className='postDescription'>
@@ -151,20 +196,21 @@ export default function Post(props){
                 </a>
             </Content>
         </Container>
-
+            
         </>
         
     )
 }
 
 const Container = styled.div`
-    width: 610px;
+    width: 611px;
     height: 276px;
     background: #171717;
     border-radius: 16px;
-    padding: 15px;
+    padding: 15px 15px 15px 5px;
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: ${props => props.comments};
+    position: relative;
 
     a{
         text-decoration: none;
@@ -174,11 +220,11 @@ const Container = styled.div`
     }
 `
 const Left = styled.div`
-    width: 60px;
+    width: 86px;
     align-items: center;
     display: flex;
     flex-direction: column;
-    margin-right: 18px;
+    margin-right: 15px;
     h6{
         font-size: 11px;
         font-family: 'Lato';
