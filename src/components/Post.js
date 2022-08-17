@@ -159,8 +159,15 @@ export default function Post(props){
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
                 
-                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended postId={dataPost.postId} dataPost={dataPost}/></>:<Comments setExpendedComments={setExpendedComments}
-                    expendedComments={expendedComments}/>}
+                    {expendedComments?
+                        <> 
+                            <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
+                            <CommentsExpended postId={dataPost.postId} dataPost={dataPost}/>
+                        </>
+                        :
+                        <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments}
+                        expendedComments={expendedComments}/>
+                    }
                
             </Left>
             <Content editable={editable}>
