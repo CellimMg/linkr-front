@@ -117,6 +117,38 @@ export default function Post(props){
             setEditable(!editable);
         }
     }
+    function deleteModal () {
+        return (
+            Swal.fire({
+                title: "<h5 style='color:white'>" + 'Are you sure you want to delete this post?' + "</h5>",
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#333333',
+                fontColor: 'white',
+                confirmButtonColor: '#1877F2',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
+                        props.setRefreshTimeline(true);
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                          )
+                    }).catch((err) => {
+                        Swal.fire(
+                            'Erro!',
+                            'Houve um erro ao tentar deletar seu post.',
+                            'error'
+                        )
+                    })
+
+                }
+              })
+        )
+    }
     function comments(){
         if(expendedComments){
             setExpendedComments(false)
@@ -144,7 +176,7 @@ export default function Post(props){
                 <div className='topo'>
                     <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                     <div>
-                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' /></> : <span></span>}
+                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
                     </div>
                 </div>
                 <div className='postDescription'>
