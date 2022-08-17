@@ -29,6 +29,8 @@ export default function CommentsExpended({postId,dataPost}){
     const user = JSON.parse(localStorage.user)
     const [textComment, setTextComment] = React.useState('')
     const [comments, setCommets] = React.useState(dataPost.whoComments)
+    const [load,setLoad] = React.useState(false);
+
     const noComments = comments !== null
     const config ={
         headers:{
@@ -37,6 +39,7 @@ export default function CommentsExpended({postId,dataPost}){
     }
     function sendComment(event){
         event.preventDefault();
+        setLoad(true)
         const body = {
             userId: user.data.id,
             postId: postId,
@@ -52,12 +55,14 @@ export default function CommentsExpended({postId,dataPost}){
                         userId:user.data.id,
                         text:textComment 
                     }])
+                    setLoad(false)
                 }else{
                     setCommets(e => [{
                         author:user.data.name,
                         userId:user.data.id,
                         text:textComment 
                     },...e])
+                    setLoad(false)
                 }
                
             })
@@ -79,7 +84,7 @@ export default function CommentsExpended({postId,dataPost}){
                         value={textComment}
                         onChange={(e)=>setTextComment(e.target.value)}
                         placeholder='write a comment...' />
-                    <button><FiSend color='#fff' size={15} /></button>
+                    <button disabled={load}><FiSend color='#fff' size={15} /></button>
                 </Forms>
 
             </DoComment>
