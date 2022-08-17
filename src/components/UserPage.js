@@ -8,6 +8,7 @@ import TopBar from './TopBar';
 import url from '../repositories/server.js';
 import Trending from '../components/hashtag/Trending.js'
 import UserContext from '../context/userContext.js';
+import FollowButton from './FollowButton.js';
 
 
 export default function UserPage() {
@@ -71,7 +72,10 @@ export default function UserPage() {
                     <Content>
                         {userData.posts.length === 0?<p>Nothing yet</p>:(userData.posts.reverse()).map((e, index) => loadPosts(e, index))}
                     </Content>
+                    <div>
+                    <FollowButton followedId={id}/>
                     <Trending />
+                    </div>
                 </Main>
                 
                 
