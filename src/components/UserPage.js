@@ -31,7 +31,6 @@ export default function UserPage() {
         promise
             .then((req) => {
                 setUserData(req.data)
-                console.log(req.data)
                 setLoad(false)
             })
             .catch(error =>console.log(error.response.data))
@@ -47,8 +46,11 @@ export default function UserPage() {
             urlTitle: e.urlTitle,
             urlImage: e.urlImage,
             urlDescription: e.urlDescription,
-            likes:parseInt(e.likes)
+            likes:parseInt(e.likes),
+            whoLikes: e.whoLikes,
         }
+       
+        
         return <Post postData={postsData} key={index} />
     }
     return (<>

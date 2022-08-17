@@ -25,6 +25,7 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     margin-top:10px;
+    
     h6{
         font-size: 11px;
         color:#fff;

@@ -51,6 +51,7 @@ const Container = styled.div`
     top:276px;
     border-radius: 16px;
     padding: 10px 20px 15px 20px;
+    
     .profile{
         height: 39px;
         width: 39px;
