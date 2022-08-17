@@ -16,7 +16,7 @@ export default function Post(props){
     const dataPost = (props.postData)
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
-    const [load,setLoad] = React.useState(true);
+    const [load,setLoad] = React.useState(false);
     const [editable, setEditable] = React.useState(true);
     const [description, setDescription] = React.useState(props.postData.description);
     const inputRef = React.useRef();
@@ -44,7 +44,6 @@ export default function Post(props){
                     setLiked(false)
                     setCountLikes(countLikes - 1)
                     setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
-                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -58,7 +57,6 @@ export default function Post(props){
                     setLiked(true)
                     setCountLikes(countLikes + 1)
                     setUsersLikes((e)=> ['Você',...e])
-                    getLikes(postId)
                 })
                 .catch(()=>{
                     setLiked(false)
@@ -67,31 +65,31 @@ export default function Post(props){
         
     }
     
-    function getLikes(postId){
-        const whoLikes = axios.get(`${url}/likes/${postId}/${user.data.id}`,config)
-        whoLikes.then((res)=>{
-            setUsersLikes(res.data.names)
-            if(res.data.names.length > 2){
+    function getLikes(){
+        if(dataPost.whoLikes !== null){
+            dataPost.whoLikes.map((element)=>{
+                if(element.id !== user.data.id){
+                    setUsersLikes((e)=> [element.name,...e])
+                    
+                }else{
+                    setUsersLikes((e)=> ['Você',...e])
+                    setLiked(true)
+                }
+            })
+            if(dataPost.whoLikes.length > 2){
                 let text = ''
-                        if(res.data.quantyLikes - 2 <= 1){
-                            text = `outra ${res.data.quantyLikes - 2} pessoa`
+                        if(dataPost.likes - 2 <= 1){
+                            text = `outra ${dataPost.likes- 2} pessoa`
                         }else{
-                            text = `outras ${res.data.quantyLikes - 2} pessoas`
+                            text = `outras ${dataPost.likes- 2} pessoas`
                         }
-                setUsersLikes([res.data.names[0], res.data.names[1],text])   
-            }
-        })
-        const promise = axios.get(`${url}/like/${user.data.id}/${dataPost.postId}`,config)
-        promise.then((res)=>{
-            setLoad(false)
-            if(res.data){    
-                setLiked(true)    
-            }
-        })
+                    setUsersLikes((e)=> [e[0], e[1],text])   
+                }
+        }
         
     }
     React.useEffect(()=>{
-        getLikes(dataPost.postId)
+        getLikes()
 
     },[])
     function doNothin(){
@@ -149,13 +147,6 @@ export default function Post(props){
               })
         )
     }
-    function comments(){
-        if(expendedComments){
-            setExpendedComments(false)
-        }else{
-            setExpendedComments(true)
-        }
-    }
 
     return(
         <>
@@ -168,7 +159,7 @@ export default function Post(props){
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
                 
-                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended /></>:<Comments setExpendedComments={setExpendedComments}
+                    {expendedComments?<> <Comments setExpendedComments={setExpendedComments} expendedComments={expendedComments}/><CommentsExpended postId={dataPost.postId} dataPost={dataPost}/></>:<Comments setExpendedComments={setExpendedComments}
                     expendedComments={expendedComments}/>}
                
             </Left>
