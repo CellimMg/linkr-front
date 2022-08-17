@@ -65,17 +65,20 @@ export default function UserPage() {
             <Container>
                 <TopBar />
                 <Head>
+                   <div>
                     <img src={userData.picture} alt='perfil'></img>
                     <h1>{userData.name}'s posts</h1>
+                    </div>
+                    
+                    <Button>
+                    <FollowButton followedId={id}/>
+                    </Button>
                 </Head>
                 <Main>
                     <Content>
                         {userData.posts.length === 0?<p>Nothing yet</p>:(userData.posts.reverse()).map((e, index) => loadPosts(e, index))}
                     </Content>
-                    <div>
-                    <FollowButton followedId={id}/>
                     <Trending />
-                    </div>
                 </Main>
                 
                 
@@ -99,8 +102,15 @@ const Head = styled.div`
     width: 930px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-top: 50px;
     margin-bottom: 40px;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
     h1{
         font-family: 'Oswald';
         font-weight: 700;
@@ -141,8 +151,12 @@ const Main = styled.div`
     justify-content: center;
     @media(max-width:710px) {
     width: 100%;
+}`
+
+const Button = styled.div`
+    display: flex;
+    justify-content: end;
+    @media(max-width:710px) {
+    
 }
-    
-      
-    
 `

@@ -47,7 +47,7 @@ export default function FollowButton( { followedId } ) {
         const promise = axios.post(`${url}/follow`, followData, config);
         promise.then((res) => {
             console.log(res.data);
-            setRefreshButton(true);
+            //setRefreshButton(true);
         })
     }
 
@@ -65,7 +65,7 @@ export default function FollowButton( { followedId } ) {
     }
 
     return(
-        <Button follows={follows} Onclick={toggleFollow()}>
+        <Button follows={follows} Onclick={toggleFollow}>
             { follows ? <h3>Unfollow</h3> : <h3>Follow</h3> }
         </Button>
     );
