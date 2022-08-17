@@ -70,13 +70,13 @@ export default function CommentsExpended({postId,dataPost}){
     }
     return(
         <>
-        <Container>
-            <Content>
+        <ContainerComments>
+            <ContentComments>
                 {noComments? 
                     comments.map((e,index) => <Comment data={e} userPost={dataPost.userId} key={index}/>)
                     :
                      <h4>No comments yet...</h4>}
-            </Content>
+            </ContentComments>
             <DoComment>
                 <img className='profile' src={user.data.picture_url} alt='profile'/>
                 <Forms onSubmit={event => sendComment(event)}>
@@ -86,27 +86,28 @@ export default function CommentsExpended({postId,dataPost}){
                         placeholder='write a comment...' />
                     <button disabled={load}><FiSend color='#fff' size={15} /></button>
                 </Forms>
-
             </DoComment>
-        </Container>
-        
+        </ContainerComments>
         </>)
 }
 
-const Container = styled.div`
+const ContainerComments = styled.div`
     background-color: #1E1E1E;
-    position: absolute;
+    position: relative;
     height: 300px;
     width: 611px;
     left: 0;
-    top:276px;
+    top:-25px;
     border-radius: 16px;
     padding: 10px 20px 15px 20px;
+    z-index: 1;
     
     .profile{
         height: 39px;
         width: 39px;
         margin: 0;
+        border-radius: 50%;
+       
     }
     @media (max-width: 610px){
         width: 100%;
@@ -121,7 +122,7 @@ const DoComment = styled.div`
 
    
 `
-const Content = styled.div`
+const ContentComments = styled.div`
     height: 200px;
     overflow: scroll;
     h4{
@@ -167,6 +168,7 @@ const UserComment = styled.div`
     height: 70px;
     border-bottom: 1px solid #353535;
     display: flex;
+    align-items: center;
 `
 const CommentContent = styled.div`
     margin-left: 10px;

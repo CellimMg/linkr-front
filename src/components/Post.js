@@ -149,8 +149,9 @@ export default function Post(props){
     }
 
     return(
-        <>
-        <Container comments={expendedComments? '310px': '10px'}>
+        <PrincipalContainer>
+            
+        <ContainerPost comments={expendedComments? '0px': '0px'}>
             <Left>
                 <img src={dataPost.userImage} alt='profile'></img>
                 <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
@@ -158,18 +159,9 @@ export default function Post(props){
                     <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
                     <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                 </Icon>
-                
-                    {expendedComments?
-                        <> 
-                            <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
-                            <CommentsExpended postId={dataPost.postId} dataPost={dataPost}/>
-                        </>
-                        :
-                        <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments}
-                        expendedComments={expendedComments}/>
-                    }
-               
+                <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
             </Left>
+            
             <Content editable={editable}>
                 <div className='topo'>
                     <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
@@ -193,23 +185,32 @@ export default function Post(props){
                     </div>
                 </a>
             </Content>
-        </Container>
-            
-        </>
+        </ContainerPost> 
+        {expendedComments?<CommentsExpended postId={dataPost.postId} dataPost={dataPost}/> :<></>} 
         
+        </PrincipalContainer>
     )
 }
 
-const Container = styled.div`
+const PrincipalContainer= styled.div`
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    `
+
+const ContainerPost = styled.div`
     width: 611px;
     height: 276px;
     background: #171717;
     border-radius: 16px;
     padding: 15px 15px 15px 5px;
     display: flex;
-    margin-bottom: ${props => props.comments};
     position: relative;
-
+    left: 0;
+    top:0;
+    z-index: 2;
     a{
         text-decoration: none;
     }
