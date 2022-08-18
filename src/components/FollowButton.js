@@ -7,7 +7,6 @@ export default function FollowButton( { followedId } ) {
     const user = JSON.parse(localStorage.user);
     const [refreshButton, setRefreshButton] = React.useState(false); 
     const [follows, setFollow] = React.useState(false);
-    //const [marker, setMarker] = React.useState([]);
 
     const config ={
         headers:{
@@ -26,9 +25,10 @@ export default function FollowButton( { followedId } ) {
             console.log(error);
         });
 
-    }, []);
+    }, [refreshButton]);
 
     function toggleFollow() {
+        console.log('testando toggle');
         const followData = {
             follows: follows,
             userId: user.data.id,
@@ -38,29 +38,16 @@ export default function FollowButton( { followedId } ) {
         const promise = axios.post(`${url}/follow`, followData, config);
         promise.then((res) => {
             console.log(res.data);
-            //this.forceUpdate();
-            //setMarker([...marker, 1]);
+            setRefreshButton(!refreshButton);
         }) 
         promise.catch((error) => {
             console.log(error);
         });
     }
 
-    if(refreshButton){
-            const button = axios.get(`${url}/follow/${followedId}`, config);
-            button.then((res) => {
-                console.log(res.data);
-                setFollow(res.data.relation);
-                setRefreshButton(false);
-            });
-            button.catch((error) => {
-                console.log(error);
-                setRefreshButton(false);
-            }); 
-    }
 
     return(
-        <Button follows={follows} Onclick={toggleFollow()}>
+        <Button follows={follows} onClick={() => toggleFollow()}>
             { follows ? <h3>Unfollow</h3> : <h3>Follow</h3> }
         </Button>
     );
