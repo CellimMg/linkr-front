@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import {AiOutlineHeart,AiFillHeart, AiOutlineEdit} from 'react-icons/ai';
 import { IoTrashOutline } from "react-icons/io5";
+import { BiRepost } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
@@ -132,13 +133,46 @@ export default function Post(props){
                         props.setRefreshTimeline(true);
                         Swal.fire(
                             'Deleted!',
-                            'Your file has been deleted.',
+                            'Your post has been deleted.',
                             'success'
                           )
                     }).catch((err) => {
                         Swal.fire(
-                            'Erro!',
-                            'Houve um erro ao tentar deletar seu post.',
+                            'Error!',
+                            'An error ocurred when trying to delete your post',
+                            'error'
+                        )
+                    })
+
+                }
+              })
+        )
+    }
+
+    function repostModal (){
+        return (
+            Swal.fire({
+                title: "<h5 style='color:white'>" + 'Do you want to repost this link?' + "</h5>",
+                icon: 'question',
+                showCancelButton: true,
+                background: '#333333',
+                fontColor: 'white',
+                confirmButtonColor: '#1877F2',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, repost it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
+                        props.setRefreshTimeline(true);
+                        Swal.fire(
+                            'Reposted!',
+                            'Your successfully reposted a link',
+                            'success'
+                          )
+                    }).catch((err) => {
+                        Swal.fire(
+                            'Error!',
+                            'An error ocurred when trying to repost the link.',
                             'error'
                         )
                     })
@@ -168,7 +202,7 @@ export default function Post(props){
                         <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments}
                         expendedComments={expendedComments}/>
                     }
-               
+                <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
             </Left>
             <Content editable={editable}>
                 <div className='topo'>
