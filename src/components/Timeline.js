@@ -31,9 +31,9 @@ export default function Timeline() {
 
         promise.then((res) => {
             console.log(res.data);
-            setpostData(res.data);
+            setpostData(res.data.tldata);
             if(postData.length === 0){
-                setMessage("There are no posts yet");
+                setMessage(`${res.data.message}`);
             }
         });
         promise.catch((error) => {

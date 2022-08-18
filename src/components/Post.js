@@ -183,58 +183,60 @@ export default function Post(props){
     }
 
     return(
-        <>
-        <Container comments={expendedComments? '310px': '10px'}>
-            <Left>
-                <img src={dataPost.userImage} alt='profile'></img>
-                <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
-                    {liked? <AiFillHeart color='red'/>:<AiOutlineHeart/>} 
-                    <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
-                    <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
-                </Icon>
-                
-                    {expendedComments?
-                        <> 
-                            <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
-                            <CommentsExpended postId={dataPost.postId} dataPost={dataPost}/>
-                        </>
-                        :
-                        <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments}
-                        expendedComments={expendedComments}/>
-                    }
-                <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
-            </Left>
-            <Content editable={editable}>
-                <div className='topo'>
-                    <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
-                    <div>
-                        {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
-                    </div>
-                </div>
-                <div className='postDescription'>
-                    <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef}/>
-                </div>
-                <a href={dataPost.link} target="_blank">
-                    <div className='linkBody'>
-                        <div className='linkText'>
-                            <h2>{dataPost.urlTitle}</h2>
-                            <h5>{dataPost.urlDescription}</h5>
-                            <h4>{dataPost.link}</h4>
-                        </div>
-                        <div className='linkImage'>
-                            <img src={dataPost.urlImage}/>
-                        </div>
-                    </div>
-                </a>
-            </Content>
-        </Container>
+        <PrincipalContainer>
             
-        </>
+            <ContainerPost comments={expendedComments? '0px': '0px'}>
+                <Left>
+                    <img src={dataPost.userImage} alt='profile'></img>
+                    <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
+                        {liked? <AiFillHeart color='red'/>:<AiOutlineHeart/>} 
+                        <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
+                        <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
+                    </Icon>
+                    <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
+                </Left>
+                
+                <Content editable={editable}>
+                    <div className='topo'>
+                        <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
+                        <div>
+                            {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
+                        </div>
+                    </div>
+                    <div className='postDescription'>
+                        <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef}/>
+                    </div>
+                    <a href={dataPost.link} target="_blank">
+                        <div className='linkBody'>
+                            <div className='linkText'>
+                                <h2>{dataPost.urlTitle}</h2>
+                                <h5>{dataPost.urlDescription}</h5>
+                                <h4>{dataPost.link}</h4>
+                            </div>
+                            <div className='linkImage'>
+                                <img src={dataPost.urlImage}/>
+                            </div>
+                        </div>
+                    </a>
+                </Content>
+            </ContainerPost> 
+            {expendedComments?<CommentsExpended postId={dataPost.postId} dataPost={dataPost}/> :<></>} 
         
+        </PrincipalContainer>
     )
 }
 
-const Container = styled.div`
+const PrincipalContainer= styled.div`
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    @media (max-width: 610px){
+        align-items: center;
+    }
+    `
+
+const ContainerPost = styled.div`
     width: 611px;
     height: 276px;
     background: #171717;
@@ -243,7 +245,9 @@ const Container = styled.div`
     display: flex;
     margin-bottom: ${props => props.comments};
     position: relative;
-
+    left: 0;
+    top:0;
+    z-index: 2;
     a{
         text-decoration: none;
     }
