@@ -28,7 +28,7 @@ function Comment({data,userPost}){
 export default function CommentsExpended({postId,dataPost}){
     const user = JSON.parse(localStorage.user)
     const [textComment, setTextComment] = React.useState('')
-    const [comments, setCommets] = React.useState(dataPost.whoComments)
+    const [comments, setCommets] = React.useState(dataPost.whoComments.reverse())
     const [load,setLoad] = React.useState(false);
 
     const noComments = comments !== null
