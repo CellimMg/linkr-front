@@ -34,7 +34,7 @@ export default function TopBar() {
     }
 
     return (
-        <Top rotate={open}>
+        <Top open={open}>
             <Main>
                 <Link to='/timeline' ><h1>linkr</h1></Link>
                 <SearchBar />
@@ -98,7 +98,7 @@ const Top = styled.div`
         width: 30px;
         height: 30px;
         transition: rotateX 0.5s;
-        transform: ${props => props.rotate ? "rotateX(180deg)" : "rotateX(0deg)"};
+        transform: ${props => props.open ? "rotateX(180deg)" : "rotateX(0deg)"};
     }
 
 
