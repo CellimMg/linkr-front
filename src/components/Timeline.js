@@ -47,7 +47,7 @@ export default function Timeline() {
         const tl = axios.get(`${url}/timeline`, config);
         tl.then((res) => {
             console.log(res.data);
-            setpostData(res.data);
+            setpostData(res.data.tldata);
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
@@ -56,6 +56,10 @@ export default function Timeline() {
     }
 
     function loadPosts(postData, index) {
+        let comments = 0
+        if(postData.whoComments !== null){
+            comments = postData.whoComments.length
+        }
         const postsData = {
             userId: postData.userId,
             userName: postData.username,
@@ -68,7 +72,9 @@ export default function Timeline() {
             urlDescription: postData.urlDescription,
             likes:postData.likes,
             whoLikes: postData.whoLikes,
-            whoComments:postData.whoComments
+            whoComments:postData.whoComments,
+            followers:postData.followers,
+            comments
 
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
