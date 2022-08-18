@@ -16,6 +16,8 @@ export default function UserPage() {
     const [load, setLoad] = React.useState(true)
     const user = JSON.parse(localStorage.user)
     let { id } = useParams();
+    console.log(user.data.id);
+    console.log(id);
 
     const config ={
         headers:{
@@ -71,7 +73,7 @@ export default function UserPage() {
                     </div>
                     
                     <Button>
-                    <FollowButton followedId={id}/>
+                    { user.data.id != id ? <FollowButton followedId={id}/> : <></>}
                     </Button>
                 </Head>
                 <Main>
