@@ -13,6 +13,7 @@ import InfiniteScroll from "react-infinite-scroller";
 export default function Timeline() {
 
     const [sessionUser] = React.useState(JSON.parse(localStorage.user));
+    const [postToShow, setPostToShow] = React.useState([]);
     const [postData, setpostData] = React.useState([]);
     const [newPosts, setNewPosts] = React.useState([]);
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
@@ -28,6 +29,7 @@ export default function Timeline() {
         const promise = axios.get(`${url}/timeline`, config);
         promise.then((res) => {
             setpostData(res.data.tldata);
+            setPostToShow(res.data.tldata.slice(0, 10));
             if (postData?.length === 0) {
                 setMessage(`${res.data.message}`);
             }
@@ -43,6 +45,7 @@ export default function Timeline() {
         tl.then((res) => {
             console.log(res.data);
             setpostData(res.data.tldata);
+            setPostToShow(res.data.tldata.slice(0, 10));
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
@@ -80,9 +83,13 @@ export default function Timeline() {
 
     function addPosts() {
         setpostData(postData => ([...newPosts, ...postData]));
+        setPostToShow(postToShow => ([...newPosts, ...postToShow]));
         setNewPosts([]);
     }
 
+    function loadNewPosts(){
+        setPostToShow(postData.slice(postToShow.length, postData.length - postToShow.length >= 10 ? postToShow.length + 10 : postToShow.length + (postData.length - postToShow.length)));
+    }
 
     useInterval(async () => {
         try {
@@ -94,6 +101,7 @@ export default function Timeline() {
                     last: postData[0].postId || 0
                 }
             });
+
             setNewPosts([...response.data.tldata]);
         } catch (error) {
             console.log("opsie! " + error)
@@ -124,10 +132,11 @@ export default function Timeline() {
                             <h1 className="message">{message}</h1>
                             :
                             <InfiniteScroll pageStart={0}
-                                loadMore={() => { }}
-                                hasMore={true}
+                                loadMore={() => loadNewPosts()}
+                                hasMore={postData.length > postToShow.length}
+
                                 loader={<div className="loader" key={0}>Loading ...</div>}>
-                                {postData.map((e, index) => loadPosts(e, e.postId))}
+                                {postToShow.map((e, index) => loadPosts(e, e.postId))}
                             </InfiniteScroll>
                     }
                 </div>
@@ -139,7 +148,7 @@ export default function Timeline() {
 const GeneralContainer = styled.div`
     width: 100%;
     height: 100vh;
-    padding-top: 150px;
+    padding-top: 150px; 
     display: flex;
     flex-direction: column;
     align-items: center;
