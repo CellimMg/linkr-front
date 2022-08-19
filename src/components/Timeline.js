@@ -7,6 +7,7 @@ import TopBar from "./TopBar";
 import url from '../repositories/server.js';
 import useInterval from "react-useinterval";
 import Trending from "./hashtag/Trending";
+import InfiniteScroll from "react-infinite-scroller";
 
 
 export default function Timeline() {
@@ -51,7 +52,7 @@ export default function Timeline() {
 
     function loadPosts(postData, index) {
         let comments = 0
-        if(postData.whoComments !== null){
+        if (postData.whoComments !== null) {
             comments = postData.whoComments.length
         }
         const postsData = {
@@ -64,19 +65,19 @@ export default function Timeline() {
             urlTitle: postData.urlTitle,
             urlImage: postData.urlImage,
             urlDescription: postData.urlDescription,
-            likes:postData.likes,
+            likes: postData.likes,
             whoLikes: postData.whoLikes,
-            whoComments:postData.whoComments,
+            whoComments: postData.whoComments,
             whoReposted: postData.whoReposted,
             whoRepostedId: postData.whoRepostedId,
             reposted: postData.reposted,
-            count : postData.count
-            followers:postData.followers,
+            count: postData.count,
+            followers: postData.followers,
             comments
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
     }
-    
+
     function addPosts() {
         setpostData(postData => ([...newPosts, ...postData]));
         setNewPosts([]);
@@ -122,9 +123,12 @@ export default function Timeline() {
                         postData.length === 0 ?
                             <h1 className="message">{message}</h1>
                             :
-                            postData.map((e, index) => {
-                                return <Post postData={e} setRefreshTimeline={setRefreshTimeline} key={e.postId} />;
-                            })
+                            <InfiniteScroll pageStart={0}
+                                loadMore={() => { }}
+                                hasMore={true}
+                                loader={<div className="loader" key={0}>Loading ...</div>}>
+                                {postData.map((e, index) => loadPosts(e, e.postId))}
+                            </InfiniteScroll>
                     }
                 </div>
             </GeneralContainer>
