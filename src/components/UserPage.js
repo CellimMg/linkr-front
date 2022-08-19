@@ -61,12 +61,12 @@ export default function UserPage() {
             whoRepostedId: e.whoRepostedId,
             reposted: e.reposted,
             count : e.count,
-            isRepost:e.isRepost,
             comments
         }
-        if(postsData.isRepost ===false){
             return <Post postData={postsData} key={index} getPosts={getPosts}/>
-        }
+        
+            
+        
     }
     return (<>
 
