@@ -16,6 +16,8 @@ export default function UserPage() {
     const [load, setLoad] = React.useState(true)
     const user = JSON.parse(localStorage.user)
     let { id } = useParams();
+    console.log(user.data.id);
+    console.log(id);
 
     const config ={
         headers:{
@@ -25,6 +27,7 @@ export default function UserPage() {
 
     React.useEffect(() => {
         getPosts()
+
     }, [id])
 
     function getPosts() {
@@ -37,6 +40,10 @@ export default function UserPage() {
             .catch(error =>console.log(error.response.data))
     }
     function loadPosts(e, index) {
+        let comments = 0
+        if(e.whoComments!== null){
+            comments = e.whoComments.length
+        }
         const postsData = {
             userId: id,
             userName: userData.name,
@@ -49,11 +56,13 @@ export default function UserPage() {
             urlDescription: e.urlDescription,
             likes:parseInt(e.likes),
             whoLikes: e.whoLikes,
-            whoComments:e.whoComments
+            whoComments:e.whoComments,
+            followers:userData.followers,
+            comments
         }
        
         
-        return <Post postData={postsData} key={index} />
+        return <Post postData={postsData} key={index} getPosts={getPosts}/>
     }
     return (<>
 
@@ -71,7 +80,7 @@ export default function UserPage() {
                     </div>
                     
                     <Button>
-                    <FollowButton followedId={id}/>
+                    { user.data.id != id ? <FollowButton followedId={id}/> : <></>}
                     </Button>
                 </Head>
                 <Main>

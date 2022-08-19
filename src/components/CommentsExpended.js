@@ -5,15 +5,17 @@ import axios from 'axios';
 import url from '../repositories/server.js';
 
 function Comment({data,userPost}){
-    const user = JSON.parse(localStorage.user)
     let info = ''
     
-    if(parseInt(data.userId) ===parseInt(userPost)){
+    if(parseInt(data.userId) === parseInt(userPost.userId)){
         info = "• post's author"
+    }
+    if(userPost.followers !== null && userPost.followers.includes(data.userId)){
+        info = "• following"
     }
     return (
         <UserComment>
-            <img className='profile' src={user.data.picture_url} alt='profile' />
+            <img className='profile' src={data.user_picture} alt='profile' />
             <CommentContent>
                 <HeadComment>
                     <h1>{data.author}</h1>
@@ -28,9 +30,9 @@ function Comment({data,userPost}){
 export default function CommentsExpended({postId,dataPost}){
     const user = JSON.parse(localStorage.user)
     const [textComment, setTextComment] = React.useState('')
-    const [comments, setCommets] = React.useState(dataPost.whoComments)
+    const [comments, setCommets] = React.useState(null)
+    const followers = dataPost.followers
     const [load,setLoad] = React.useState(false);
-
     const noComments = comments !== null
     const config ={
         headers:{
@@ -43,7 +45,8 @@ export default function CommentsExpended({postId,dataPost}){
         const body = {
             userId: user.data.id,
             postId: postId,
-            text:textComment
+            text:textComment,
+            
         }
         const promise = axios.post(`${url}/comments`,body,config)
         promise
@@ -53,14 +56,16 @@ export default function CommentsExpended({postId,dataPost}){
                     setCommets([{
                         author:user.data.name,
                         userId:user.data.id,
-                        text:textComment 
+                        text:textComment,
+                        user_picture:user.data.picture_url
                     }])
                     setLoad(false)
                 }else{
                     setCommets(e => [{
                         author:user.data.name,
                         userId:user.data.id,
-                        text:textComment 
+                        text:textComment,
+                        user_picture:user.data.picture_url 
                     },...e])
                     setLoad(false)
                 }
@@ -68,12 +73,18 @@ export default function CommentsExpended({postId,dataPost}){
             })
             .catch(res => console.log(res.response))
     }
+    React.useEffect(()=>{
+        if(dataPost.whoComments !== null){
+            setCommets(dataPost.whoComments.reverse())
+        }
+        
+    },[dataPost])
     return(
         <>
         <ContainerComments>
             <ContentComments>
                 {noComments? 
-                    comments.map((e,index) => <Comment data={e} userPost={dataPost.userId} key={index}/>)
+                    comments.map((e,index) => <Comment data={e} userPost={dataPost} key={index}/>)
                     :
                      <h4>No comments yet...</h4>}
             </ContentComments>
@@ -130,6 +141,7 @@ const ContentComments = styled.div`
         height: 100%;
         width: 100%;
         text-align: center;
+        margin-top: 100px;
     }
 `
 const Forms = styled.form`

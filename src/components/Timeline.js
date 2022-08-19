@@ -4,50 +4,44 @@ import Post from "./Post";
 import Publication from "./Publication";
 import axios from 'axios';
 import TopBar from "./TopBar";
-import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
 import url from '../repositories/server.js';
+import useInterval from "react-useinterval";
 import Trending from "./hashtag/Trending";
 
 
 export default function Timeline() {
 
-    const [sessionUser, setSessionUser] = React.useState(JSON.parse(localStorage.user));
+    const [sessionUser] = React.useState(JSON.parse(localStorage.user));
     const [postData, setpostData] = React.useState([]);
-    const [token, setToken] = React.useState("");
+    const [newPosts, setNewPosts] = React.useState([]);
     const [refreshTimeline, setRefreshTimeline] = React.useState(false);
     const [message, setMessage] = React.useState("Loading...");
 
-    const navigate = useNavigate();
-    
-    const config ={
-        headers:{
-            Authorization: `Bearer ${sessionUser.data.token}` 
+    const config = {
+        headers: {
+            Authorization: `Bearer ${sessionUser.data.token}`
         }
     }
 
     React.useEffect(() => {
         const promise = axios.get(`${url}/timeline`, config);
-
         promise.then((res) => {
-            console.log(res.data);
             setpostData(res.data.tldata);
-            if(postData.length === 0){
+            if (postData?.length === 0) {
                 setMessage(`${res.data.message}`);
             }
         });
         promise.catch((error) => {
             alert("An error ocurred while trying to fetch the posts, please refresh the page");
         });
-
-
     }, []);
 
-    if(refreshTimeline){
+
+    if (refreshTimeline) {
         const tl = axios.get(`${url}/timeline`, config);
         tl.then((res) => {
             console.log(res.data);
-            setpostData(res.data);
+            setpostData(res.data.tldata);
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
@@ -56,6 +50,10 @@ export default function Timeline() {
     }
 
     function loadPosts(postData, index) {
+        let comments = 0
+        if(postData.whoComments !== null){
+            comments = postData.whoComments.length
+        }
         const postsData = {
             userId: postData.userId,
             userName: postData.username,
@@ -73,39 +71,63 @@ export default function Timeline() {
             whoRepostedId: postData.whoRepostedId,
             reposted: postData.reposted,
             count : postData.count
-
+            followers:postData.followers,
+            comments
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
     }
+    
+    function addPosts() {
+        setpostData(postData => ([...newPosts, ...postData]));
+        setNewPosts([]);
+    }
+
+
+    useInterval(async () => {
+        try {
+            const response = await axios.get(`${url}/timeline`, {
+                headers: {
+                    Authorization: `Bearer ${sessionUser.data.token}`
+                },
+                params: {
+                    last: postData[0].postId || 0
+                }
+            });
+            setNewPosts([...response.data.tldata]);
+        } catch (error) {
+            console.log("opsie! " + error)
+        }
+    }, 15000);
 
     return (
         <>
             <GeneralContainer>
-                <TopBar userImage={localStorage.getItem('user') === null? <span>dummy</span> : sessionUser.data.picture_url}/>
+                <TopBar userImage={localStorage.getItem('user') === null ? <span>dummy</span> : sessionUser.data.picture_url} />
                 <div className="head">
                     <div className="content">
                         <div className="timeline">
                             <h1>timeline</h1>
                         </div>
-                        <Publication setRefreshTimeline={setRefreshTimeline}/>
+                        <Publication setRefreshTimeline={setRefreshTimeline} />
                     </div>
                     <div className="trending">
                         <Trending />
                     </div>
                 </div>
-                    <div className="posts">
-                        {
-                            postData.length === 0 ?
+                <div className="posts">
+                    {
+                        newPosts.length > 0 ? <ButtonLoadMore onClick={() => addPosts()}>{newPosts.length} new posts, load more!</ButtonLoadMore> : <></>
+                    }
+                    {
+                        postData.length === 0 ?
                             <h1 className="message">{message}</h1>
                             :
-                            postData.map((e, index) => loadPosts(e, index))
-                        }
-                    </div>  
-                
-                
-                 
+                            postData.map((e, index) => {
+                                return <Post postData={e} setRefreshTimeline={setRefreshTimeline} key={e.postId} />;
+                            })
+                    }
+                </div>
             </GeneralContainer>
-           
         </>
     )
 }
@@ -195,3 +217,23 @@ const GeneralContainer = styled.div`
     }
     
 `
+
+const ButtonLoadMore = styled.div`
+    height: 61px;
+    width: 611px;
+    border-radius: 20px;
+    background-color: #1877F2;
+    color: white;
+    font-size: 16px;
+    font-family: 'Lato';
+    text-align: center;
+    line-height: 61px;
+
+    &:hover{
+        cursor: pointer;
+    }
+
+    @media (max-width: 610px){
+        width: 100%;
+    }
+`;

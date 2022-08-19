@@ -1,104 +1,104 @@
 import styled from 'styled-components';
-import {AiOutlineHeart,AiFillHeart, AiOutlineEdit} from 'react-icons/ai';
+import { AiOutlineHeart, AiFillHeart, AiOutlineEdit } from 'react-icons/ai';
 import { IoTrashOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import url from '../repositories/server.js';
-import userContext from '../context/userContext.js';
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import Comments from './Comments.js';
 import CommentsExpended from './CommentsExpended.js';
 
 
 export default function Post(props){
-    const dataPost = (props.postData)
+    const dataPost = props.postData
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
-    const [load,setLoad] = React.useState(false);
+    const [load, setLoad] = React.useState(false);
     const [editable, setEditable] = React.useState(true);
     const [description, setDescription] = React.useState(props.postData.description);
     const inputRef = React.useRef();
     const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
     const [usersLikes,setUsersLikes]  = React.useState('')
     const [expendedComments , setExpendedComments] = React.useState(false)
-    
+    const [quantyComments, setQuantyCommnets] = React.useState(dataPost.comments)
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
         }
     }
 
-    function like(postId){
+    function like(postId) {
         setLoad(true)
-        const body ={
-            userId:user.data.id,
+        const body = {
+            userId: user.data.id,
             postId
         }
-        if(liked){
-            const promise = axios.post(`${url}/unlike`,body, config)
+        if (liked) {
+            const promise = axios.post(`${url}/unlike`, body, config)
             promise
-                .then(()=>{
+                .then(() => {
                     setLoad(false)
                     setLiked(false)
                     setCountLikes(countLikes - 1)
-                    setUsersLikes(prev => prev.filter(me=>me !== 'Você'))
+                    setUsersLikes(prev => prev.filter(me => me !== 'Você'))
                 })
-                .catch(()=>{
+                .catch(() => {
                     setLiked(false)
                 })
-            
-        }else{
-            const promise = axios.post(`${url}/like`,body,config)
+
+        } else {
+            const promise = axios.post(`${url}/like`, body, config)
             promise
-                .then(()=>{
+                .then(() => {
                     setLoad(false)
                     setLiked(true)
                     setCountLikes(countLikes + 1)
-                    setUsersLikes((e)=> ['Você',...e])
+                    setUsersLikes((e) => ['Você', ...e])
                 })
-                .catch(()=>{
+                .catch(() => {
                     setLiked(false)
                 })
         }
-        
+
     }
-    
-    function getLikes(){
+   
+    React.useEffect(()=>{
+        setLiked(false)
+        setDescription(dataPost.description)
+        setCountLikes(parseInt(dataPost.likes))
+        setUsersLikes('')
+        setQuantyCommnets(dataPost.comments)
         if(dataPost.whoLikes !== null){
             dataPost.whoLikes.map((element)=>{
                 if(element.id !== user.data.id){
                     setUsersLikes((e)=> [element.name,...e])
-                    
+                    setLiked(false)
                 }else{
                     setUsersLikes((e)=> ['Você',...e])
                     setLiked(true)
                 }
             })
-            if(dataPost.whoLikes.length > 2){
+            if (dataPost.whoLikes.length > 2) {
                 let text = ''
-                        if(dataPost.likes - 2 <= 1){
-                            text = `outra ${dataPost.likes- 2} pessoa`
-                        }else{
-                            text = `outras ${dataPost.likes- 2} pessoas`
-                        }
-                    setUsersLikes((e)=> [e[0], e[1],text])   
+                if (dataPost.likes - 2 <= 1) {
+                    text = `outra ${dataPost.likes - 2} pessoa`
+                } else {
+                    text = `outras ${dataPost.likes - 2} pessoas`
                 }
+                setUsersLikes((e) => [e[0], e[1], text])
+            }
         }
-        
-    }
-    React.useEffect(()=>{
-        getLikes()
-
-    },[])
+    },[dataPost])
+    
     function doNothin(){
         //foi de proposito isso
     }
 
-    function handleKeyDown (event) {
-        if(event.key === 'Enter'){
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
             setEditable(!editable);
             const payload = {
                 description
@@ -111,12 +111,12 @@ export default function Post(props){
                 alert("Houve um problema, tente novamente");
                 setEditable(!editable);
             })
-        }else if(event.key === 'Escape'){
+        } else if (event.key === 'Escape') {
             setDescription(dataPost.description);
             setEditable(!editable);
         }
     }
-    function deleteModal () {
+    function deleteModal() {
         return (
             Swal.fire({
                 title: "<h5 style='color:white'>" + 'Are you sure you want to delete this post?' + "</h5>",
@@ -127,16 +127,18 @@ export default function Post(props){
                 confirmButtonColor: '#1877F2',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
-              }).then((result) => {
+            }).then((result) => {
                 if (result.isConfirmed) {
                     axios.delete(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
-                        props.setRefreshTimeline(true);
+                        //props.setRefreshTimeline(true);
+                        props.getPosts()
                         Swal.fire(
                             'Deleted!',
                             'Your post has been deleted.',
                             'success'
-                          )
+                        )
                     }).catch((err) => {
+                        console.log(err)
                         Swal.fire(
                             'Error!',
                             'An error ocurred when trying to delete your post',
@@ -145,7 +147,7 @@ export default function Post(props){
                     })
 
                 }
-              })
+            })
         )
     }
 
@@ -161,7 +163,6 @@ export default function Post(props){
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, repost it!'
               }).then((result) => {
-                console.log("AAAAAAAAA",dataPost);
                 if (result.isConfirmed & (dataPost.userId !== user.data.id) & (dataPost.whoRepostedId !== user.data.id)) {
                     const payload = {
                         userId: dataPost.userId,
@@ -200,7 +201,6 @@ export default function Post(props){
               })
         )
     }
-    console.log(dataPost.count)
 
     return(
         <PrincipalContainer>
@@ -213,27 +213,28 @@ export default function Post(props){
                 null
             }
             <ContainerPost comments={expendedComments? '0px': '0px'}>
-
                 <Left>
                     <img src={dataPost.userImage} alt='profile'></img>
-                    <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
-                        {liked? <AiFillHeart color='red'/>:<AiOutlineHeart/>} 
-                        <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1? <>like</>:<>likes</>}</h6>   
-                        <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
+                    <Icon onClick={(e) => { load ? doNothin() : like(dataPost.postId) }} >
+                        {liked ? <AiFillHeart color='red' /> : <AiOutlineHeart />}
+                        <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1 ? <>like</> : <>likes</>}</h6>
+                        <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d' />
                     </Icon>
-                    <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
+                    <Comments numberCommnets={ quantyComments} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
                     <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
                     <h6>{dataPost.count} {dataPost.count === 1? <>re-post</>:<>re-posts</>}</h6>
                 </Left>
+
                 <Content editable={editable}>
                     <div className='topo'>
                         <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                         <div>
-                            {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
+                            {parseInt(dataPost.userId) === (user.data.id) ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
+
                         </div>
                     </div>
                     <div className='postDescription'>
-                        <textarea readOnly={editable}  onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef}/>
+                        <textarea readOnly={editable} onBlur={() => [console.log(dataPost.description), setDescription(props.postData.description)]} onChange={(event) => setDescription(event.target.value)} value={description} onKeyDown={handleKeyDown} ref={inputRef} />
                     </div>
                     <a href={dataPost.link} target="_blank">
                         <div className='linkBody'>
@@ -243,19 +244,19 @@ export default function Post(props){
                                 <h4>{dataPost.link}</h4>
                             </div>
                             <div className='linkImage'>
-                                <img src={dataPost.urlImage}/>
+                                <img src={dataPost.urlImage} />
                             </div>
                         </div>
                     </a>
                 </Content>
-            </ContainerPost> 
-            {expendedComments?<CommentsExpended postId={dataPost.postId} dataPost={dataPost}/> :<></>} 
-        
+            </ContainerPost>
+            {expendedComments ? <CommentsExpended postId={dataPost.postId} dataPost={dataPost} /> : <></>}
+
         </PrincipalContainer>
     )
 }
 
-const PrincipalContainer= styled.div`
+const PrincipalContainer = styled.div`
     margin-top: 20px;
     position: relative;
     display: flex;
