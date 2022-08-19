@@ -63,7 +63,10 @@ export default function UserPage() {
             count : e.count,
             comments
         }
+        if(postsData.reposted === false){
             return <Post postData={postsData} key={index} getPosts={getPosts}/>
+        }
+            
         
             
         
