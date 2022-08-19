@@ -27,13 +27,12 @@ export default function SignIn() {
 
                 localStorage.setItem("user", JSON.stringify(response));
                 setUser(response);
-
                 navigate("/timeline");
             } catch (error) {
                 showError(error.response.data.message);
+                setLoading(false);
             }
         }
-        setLoading(false);
     }
 
     return (
