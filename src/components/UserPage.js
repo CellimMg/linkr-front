@@ -16,8 +16,7 @@ export default function UserPage() {
     const [load, setLoad] = React.useState(true)
     const user = JSON.parse(localStorage.user)
     let { id } = useParams();
-    console.log(user.data.id);
-    console.log(id);
+    
 
     const config ={
         headers:{
@@ -60,7 +59,6 @@ export default function UserPage() {
             followers:userData.followers,
             comments
         }
-       
         
         return <Post postData={postsData} key={index} getPosts={getPosts}/>
     }

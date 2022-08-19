@@ -40,7 +40,6 @@ export default function Timeline() {
     if (refreshTimeline) {
         const tl = axios.get(`${url}/timeline`, config);
         tl.then((res) => {
-            console.log(res.data);
             setpostData(res.data.tldata);
             setRefreshTimeline(false);
         });
@@ -70,7 +69,7 @@ export default function Timeline() {
             whoReposted: postData.whoReposted,
             whoRepostedId: postData.whoRepostedId,
             reposted: postData.reposted,
-            count : postData.count
+            count : postData.count,
             followers:postData.followers,
             comments
         }
@@ -122,9 +121,8 @@ export default function Timeline() {
                         postData.length === 0 ?
                             <h1 className="message">{message}</h1>
                             :
-                            postData.map((e, index) => {
-                                return <Post postData={e} setRefreshTimeline={setRefreshTimeline} key={e.postId} />;
-                            })
+                            postData.map((postData, index) => loadPosts(postData,index)
+                            )
                     }
                 </div>
             </GeneralContainer>
