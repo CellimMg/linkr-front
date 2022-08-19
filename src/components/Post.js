@@ -23,6 +23,7 @@ export default function Post(props) {
     const [usersLikes, setUsersLikes] = React.useState('')
     const [expendedComments, setExpendedComments] = React.useState(false)
 
+
     const config = {
         headers: {
             Authorization: `Bearer ${user.data.token}`

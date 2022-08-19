@@ -25,20 +25,17 @@ export default function Timeline() {
 
     React.useEffect(() => {
         const promise = axios.get(`${url}/timeline`, config);
-
         promise.then((res) => {
             setpostData(res.data.tldata);
             if (postData?.length === 0) {
                 setMessage(`${res.data.message}`);
-
             }
         });
         promise.catch((error) => {
             alert("An error ocurred while trying to fetch the posts, please refresh the page");
         });
-
-
     }, []);
+
 
     if (refreshTimeline) {
         const tl = axios.get(`${url}/timeline`, config);
@@ -51,26 +48,8 @@ export default function Timeline() {
         });
     }
 
-    function loadPosts(postData, index) {
-        const postsData = {
-            userId: postData.userId,
-            userName: postData.username,
-            userImage: postData.userImage,
-            postId: postData.postId,
-            link: postData.link,
-            description: postData.description,
-            urlTitle: postData.urlTitle,
-            urlImage: postData.urlImage,
-            urlDescription: postData.urlDescription,
-            likes: postData.likes,
-            whoLikes: postData.whoLikes,
-            whoComments: postData.whoComments
-        }
-        return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
-    }
-
     function addPosts() {
-        setpostData([...newPosts, ...postData]);
+        setpostData(postData => ([...newPosts, ...postData]));
         setNewPosts([]);
     }
 
@@ -84,7 +63,6 @@ export default function Timeline() {
                     last: postData[0].postId || 0
                 }
             });
-            console.log(response);
             setNewPosts([...response.data.tldata]);
         } catch (error) {
             console.log("opsie! " + error)
@@ -114,14 +92,12 @@ export default function Timeline() {
                         postData.length === 0 ?
                             <h1 className="message">{message}</h1>
                             :
-                            postData.map((e, index) => loadPosts(e, index))
+                            postData.map((e, index) => {
+                                return <Post postData={e} setRefreshTimeline={setRefreshTimeline} key={e.postId} />;
+                            })
                     }
                 </div>
-
-
-
             </GeneralContainer>
-
         </>
     )
 }
