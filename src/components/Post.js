@@ -23,7 +23,7 @@ export default function Post(props){
     const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
     const [usersLikes,setUsersLikes]  = React.useState('')
     const [expendedComments , setExpendedComments] = React.useState(false)
-    const [quantyComments, setQuantyCommnets] = React.useState(dataPost.comments)
+    const [quantyComments, setQuantyComments] = React.useState(dataPost.comments)
     const config ={
         headers:{
             Authorization: `Bearer ${user.data.token}` 
@@ -70,7 +70,7 @@ export default function Post(props){
         setDescription(dataPost.description)
         setCountLikes(parseInt(dataPost.likes))
         setUsersLikes('')
-        setQuantyCommnets(dataPost.comments)
+        setQuantyComments(dataPost.comments)
         if(dataPost.whoLikes !== null){
             dataPost.whoLikes.map((element)=>{
                 if(element.id !== user.data.id){
@@ -249,7 +249,7 @@ export default function Post(props){
                     </a>
                 </Content>
             </ContainerPost>
-            {expendedComments ? <CommentsExpended postId={dataPost.postId} dataPost={dataPost} /> : <></>}
+            {expendedComments ? <CommentsExpended postId={dataPost.postId} dataPost={dataPost} setQuantyComments={setQuantyComments} quantyComments={quantyComments}/> : <></>}
 
         </PrincipalContainer>
     )

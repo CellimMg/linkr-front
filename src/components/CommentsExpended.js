@@ -27,7 +27,7 @@ function Comment({data,userPost}){
     )
 }
 
-export default function CommentsExpended({postId,dataPost}){
+export default function CommentsExpended({postId,dataPost,setQuantyComments, quantyComments}){
     const user = JSON.parse(localStorage.user)
     const [textComment, setTextComment] = React.useState('')
     const [comments, setCommets] = React.useState(null)
@@ -42,6 +42,7 @@ export default function CommentsExpended({postId,dataPost}){
     function sendComment(event){
         event.preventDefault();
         setLoad(true)
+        setQuantyComments(quantyComments+1)
         const body = {
             userId: user.data.id,
             postId: postId,
