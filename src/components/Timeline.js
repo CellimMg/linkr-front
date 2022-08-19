@@ -68,7 +68,11 @@ export default function Timeline() {
             urlDescription: postData.urlDescription,
             likes:postData.likes,
             whoLikes: postData.whoLikes,
-            whoComments:postData.whoComments
+            whoComments:postData.whoComments,
+            whoReposted: postData.whoReposted,
+            whoRepostedId: postData.whoRepostedId,
+            reposted: postData.reposted,
+            count : postData.count
 
         }
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />

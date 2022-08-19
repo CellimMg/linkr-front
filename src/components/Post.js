@@ -161,31 +161,59 @@ export default function Post(props){
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, repost it!'
               }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.post(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
-                        props.setRefreshTimeline(true);
+                console.log("AAAAAAAAA",dataPost);
+                if (result.isConfirmed & (dataPost.userId !== user.data.id) & (dataPost.whoRepostedId !== user.data.id)) {
+                    const payload = {
+                        userId: dataPost.userId,
+                        userImage: dataPost.userImage,
+                        username: dataPost.userName,
+                        description: dataPost.description,
+                        link: dataPost.link,
+                        reposted: true,
+                        repostUserId: user.data.id,
+                        postId: dataPost.postId
+                    }
+                    axios.post(`${url}/timeline`, payload, config).then((res) => {
                         Swal.fire(
                             'Reposted!',
                             'Your successfully reposted a link',
                             'success'
-                          )
+                        ).then (() => {
+                            props.setRefreshTimeline(true);
+                        })
+                        
                     }).catch((err) => {
                         Swal.fire(
                             'Error!',
                             'An error ocurred when trying to repost the link.',
                             'error'
-                        )
+                        )  
                     })
-
+                }else{
+                    Swal.fire(
+                        'Error!',
+                        'You already reposted this link!',
+                        'error'
+                    )
+                    console.log("Já repostado!");
                 }
               })
         )
     }
+    console.log(dataPost.count)
 
     return(
         <PrincipalContainer>
-            
+            {
+                dataPost.reposted ? 
+                <RepostContainer>
+                    <BiRepost color='white' fontSize={'20px'} style={{marginRight: '5px'}}/> Reposted by {dataPost.whoRepostedId === user.data.id ? "you" : dataPost.whoReposted}
+                </RepostContainer>
+                :
+                null
+            }
             <ContainerPost comments={expendedComments? '0px': '0px'}>
+
                 <Left>
                     <img src={dataPost.userImage} alt='profile'></img>
                     <Icon onClick={(e)=> {load?doNothin():like(dataPost.postId)}} > 
@@ -194,8 +222,9 @@ export default function Post(props){
                         <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d'/>
                     </Icon>
                     <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
+                    <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
+                    <h6>{dataPost.count} {dataPost.count <= 1? <>repost</>:<>reposts</>}</h6>
                 </Left>
-                
                 <Content editable={editable}>
                     <div className='topo'>
                         <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
@@ -282,6 +311,13 @@ const Left = styled.div`
         object-fit: cover;
         margin-bottom: 20px;
     }
+
+    h6{
+        font-size: 11px;
+        color:#fff;
+        text-align: center;
+    }
+
     @media (max-width: 610px){
         width: 40px;
         img{
@@ -420,5 +456,29 @@ const Content = styled.div`
         .linkText > h5{
             font-size: 9px;
         }
+    }
+`
+const RepostContainer = styled.div`
+    width: 611px;
+    height: 45px;
+    background-color: #1E1E1E;
+    border-radius: 16px 16px 0 0;
+    margin-bottom: -10px;
+    padding-left: 10px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+
+    color: #FFFFFF;
+
+    display: flex;
+    align-items: center;
+    
+
+    @media (max-width: 610px){
+        width: 100%;
     }
 `
