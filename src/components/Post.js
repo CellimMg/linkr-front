@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { AiOutlineHeart, AiFillHeart, AiOutlineEdit } from 'react-icons/ai';
 import { IoTrashOutline } from "react-icons/io5";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
@@ -11,8 +11,8 @@ import Comments from './Comments.js';
 import CommentsExpended from './CommentsExpended.js';
 
 
-export default function Post(props) {
-    const dataPost = (props.postData)
+export default function Post(props){
+    const dataPost = props.postData
     const [liked, setLiked] = React.useState(false)
     const user = JSON.parse(localStorage.user)
     const [load, setLoad] = React.useState(false);
@@ -20,13 +20,12 @@ export default function Post(props) {
     const [description, setDescription] = React.useState(props.postData.description);
     const inputRef = React.useRef();
     const [countLikes, setCountLikes] = React.useState(parseInt(dataPost.likes))
-    const [usersLikes, setUsersLikes] = React.useState('')
-    const [expendedComments, setExpendedComments] = React.useState(false)
-
-
-    const config = {
-        headers: {
-            Authorization: `Bearer ${user.data.token}`
+    const [usersLikes,setUsersLikes]  = React.useState('')
+    const [expendedComments , setExpendedComments] = React.useState(false)
+    const [quantyComments, setQuantyCommnets] = React.useState(dataPost.comments)
+    const config ={
+        headers:{
+            Authorization: `Bearer ${user.data.token}` 
         }
     }
 
@@ -64,15 +63,20 @@ export default function Post(props) {
         }
 
     }
-
-    function getLikes() {
-        if (dataPost.whoLikes !== null) {
-            dataPost.whoLikes.map((element) => {
-                if (element.id !== user.data.id) {
-                    setUsersLikes((e) => [element.name, ...e])
-
-                } else {
-                    setUsersLikes((e) => ['Você', ...e])
+   
+    React.useEffect(()=>{
+        setLiked(false)
+        setDescription(dataPost.description)
+        setCountLikes(parseInt(dataPost.likes))
+        setUsersLikes('')
+        setQuantyCommnets(dataPost.comments)
+        if(dataPost.whoLikes !== null){
+            dataPost.whoLikes.map((element)=>{
+                if(element.id !== user.data.id){
+                    setUsersLikes((e)=> [element.name,...e])
+                    setLiked(false)
+                }else{
+                    setUsersLikes((e)=> ['Você',...e])
                     setLiked(true)
                 }
             })
@@ -86,13 +90,9 @@ export default function Post(props) {
                 setUsersLikes((e) => [e[0], e[1], text])
             }
         }
-
-    }
-    React.useEffect(() => {
-        getLikes()
-
-    }, [])
-    function doNothin() {
+    },[dataPost])
+    
+    function doNothin(){
         //foi de proposito isso
     }
 
@@ -129,13 +129,15 @@ export default function Post(props) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios.delete(`${url}/timeline/${dataPost.postId}`, config).then((res) => {
-                        props.setRefreshTimeline(true);
+                        //props.setRefreshTimeline(true);
+                        props.getPosts()
                         Swal.fire(
                             'Deleted!',
                             'Your file has been deleted.',
                             'success'
                         )
                     }).catch((err) => {
+                        console.log(err)
                         Swal.fire(
                             'Erro!',
                             'Houve um erro ao tentar deletar seu post.',
@@ -159,14 +161,15 @@ export default function Post(props) {
                         <h6 data-tip={usersLikes} > {countLikes} {countLikes <= 1 ? <>like</> : <>likes</>}</h6>
                         <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d' />
                     </Icon>
-                    <Comments numberCommnets={dataPost.whoComments === null ? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments} />
+                    <Comments numberCommnets={ quantyComments} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
                 </Left>
 
                 <Content editable={editable}>
                     <div className='topo'>
                         <Link to={`/user/${dataPost.userId}`}><h1>{dataPost.userName}</h1></Link>
                         <div>
-                            {dataPost.userId === user.data.id ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]} /> <IoTrashOutline color='white' size='24px' onClick={deleteModal} /></> : <span></span>}
+                            {parseInt(dataPost.userId) === (user.data.id) ? <><AiOutlineEdit color='white' size='24px' onClick={() => [setEditable(!editable), inputRef.current.focus()]}/> <IoTrashOutline color='white' size='24px' onClick={deleteModal}/></> : <span></span>}
+
                         </div>
                     </div>
                     <div className='postDescription'>

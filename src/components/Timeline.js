@@ -40,7 +40,8 @@ export default function Timeline() {
     if (refreshTimeline) {
         const tl = axios.get(`${url}/timeline`, config);
         tl.then((res) => {
-            setpostData(res.data);
+            console.log(res.data);
+            setpostData(res.data.tldata);
             setRefreshTimeline(false);
         });
         tl.catch((error) => {
@@ -48,10 +49,35 @@ export default function Timeline() {
         });
     }
 
+    function loadPosts(postData, index) {
+        let comments = 0
+        if(postData.whoComments !== null){
+            comments = postData.whoComments.length
+        }
+        const postsData = {
+            userId: postData.userId,
+            userName: postData.username,
+            userImage: postData.userImage,
+            postId: postData.postId,
+            link: postData.link,
+            description: postData.description,
+            urlTitle: postData.urlTitle,
+            urlImage: postData.urlImage,
+            urlDescription: postData.urlDescription,
+            likes:postData.likes,
+            whoLikes: postData.whoLikes,
+            whoComments:postData.whoComments,
+            followers:postData.followers,
+            comments
+        }
+        return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
+    }
+    
     function addPosts() {
         setpostData(postData => ([...newPosts, ...postData]));
         setNewPosts([]);
     }
+
 
     useInterval(async () => {
         try {

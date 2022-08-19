@@ -27,6 +27,7 @@ export default function UserPage() {
 
     React.useEffect(() => {
         getPosts()
+
     }, [id])
 
     function getPosts() {
@@ -39,6 +40,10 @@ export default function UserPage() {
             .catch(error =>console.log(error.response.data))
     }
     function loadPosts(e, index) {
+        let comments = 0
+        if(e.whoComments!== null){
+            comments = e.whoComments.length
+        }
         const postsData = {
             userId: id,
             userName: userData.name,
@@ -51,11 +56,13 @@ export default function UserPage() {
             urlDescription: e.urlDescription,
             likes:parseInt(e.likes),
             whoLikes: e.whoLikes,
-            whoComments:e.whoComments
+            whoComments:e.whoComments,
+            followers:userData.followers,
+            comments
         }
        
         
-        return <Post postData={postsData} key={index} />
+        return <Post postData={postsData} key={index} getPosts={getPosts}/>
     }
     return (<>
 
