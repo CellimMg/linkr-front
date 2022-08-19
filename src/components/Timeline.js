@@ -73,6 +73,7 @@ export default function Timeline() {
             followers:postData.followers,
             comments
         }
+        
         return <Post postData={postsData} setRefreshTimeline={setRefreshTimeline} key={index} />
     }
     

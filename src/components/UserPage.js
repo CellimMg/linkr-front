@@ -57,10 +57,19 @@ export default function UserPage() {
             whoLikes: e.whoLikes,
             whoComments:e.whoComments,
             followers:userData.followers,
+            whoReposted: e.whoReposted,
+            whoRepostedId: e.whoRepostedId,
+            reposted: e.reposted,
+            count : e.count,
             comments
         }
+        if(postsData.reposted === false){
+            return <Post postData={postsData} key={index} getPosts={getPosts}/>
+        }
+            
         
-        return <Post postData={postsData} key={index} getPosts={getPosts}/>
+            
+        
     }
     return (<>
 

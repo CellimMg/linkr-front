@@ -1,4 +1,4 @@
-const url = "http://localhost:4000";
+const url = "https://linkr-back-driven.herokuapp.com";
 
 
 export default url;
