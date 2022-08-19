@@ -223,7 +223,7 @@ export default function Post(props){
                     </Icon>
                     <Comments numberCommnets={dataPost.whoComments === null? 0 : dataPost.whoComments.length} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
                     <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
-                    <h6>{dataPost.count} {dataPost.count <= 1? <>repost</>:<>reposts</>}</h6>
+                    <h6>{dataPost.count} {dataPost.count === 1? <>re-post</>:<>re-posts</>}</h6>
                 </Left>
                 <Content editable={editable}>
                     <div className='topo'>
