@@ -89,7 +89,7 @@ export default function Timeline() {
         } catch (error) {
             console.log("opsie! " + error)
         }
-    }, 5000);
+    }, 15000);
 
     return (
         <>
