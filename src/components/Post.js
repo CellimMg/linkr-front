@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { AiOutlineHeart, AiFillHeart, AiOutlineEdit } from 'react-icons/ai';
 import { IoTrashOutline } from "react-icons/io5";
+import { BiRepost } from "react-icons/bi";
 import { Link, useParams } from 'react-router-dom';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
@@ -133,14 +134,14 @@ export default function Post(props){
                         props.getPosts()
                         Swal.fire(
                             'Deleted!',
-                            'Your file has been deleted.',
+                            'Your post has been deleted.',
                             'success'
                         )
                     }).catch((err) => {
                         console.log(err)
                         Swal.fire(
-                            'Erro!',
-                            'Houve um erro ao tentar deletar seu post.',
+                            'Error!',
+                            'An error ocurred when trying to delete your post',
                             'error'
                         )
                     })
@@ -150,10 +151,68 @@ export default function Post(props){
         )
     }
 
-    return (
-        <PrincipalContainer>
+    function repostModal (){
+        return (
+            Swal.fire({
+                title: "<h5 style='color:white'>" + 'Do you want to repost this link?' + "</h5>",
+                icon: 'question',
+                showCancelButton: true,
+                background: '#333333',
+                fontColor: 'white',
+                confirmButtonColor: '#1877F2',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, repost it!'
+              }).then((result) => {
+                if (result.isConfirmed & (dataPost.userId !== user.data.id) & (dataPost.whoRepostedId !== user.data.id)) {
+                    const payload = {
+                        userId: dataPost.userId,
+                        userImage: dataPost.userImage,
+                        username: dataPost.userName,
+                        description: dataPost.description,
+                        link: dataPost.link,
+                        reposted: true,
+                        repostUserId: user.data.id,
+                        postId: dataPost.postId
+                    }
+                    axios.post(`${url}/timeline`, payload, config).then((res) => {
+                        Swal.fire(
+                            'Reposted!',
+                            'Your successfully reposted a link',
+                            'success'
+                        ).then (() => {
+                            props.setRefreshTimeline(true);
+                        })
+                        
+                    }).catch((err) => {
+                        Swal.fire(
+                            'Error!',
+                            'An error ocurred when trying to repost the link.',
+                            'error'
+                        )  
+                    })
+                }else{
+                    Swal.fire(
+                        'Error!',
+                        'You already reposted this link!',
+                        'error'
+                    )
+                    console.log("Já repostado!");
+                }
+              })
+        )
+    }
 
-            <ContainerPost comments={expendedComments ? '0px' : '0px'}>
+    return(
+        <PrincipalContainer>
+            {
+                dataPost.reposted ? 
+                <RepostContainer>
+                    <BiRepost color='white' fontSize={'20px'} style={{marginRight: '5px'}}/> Reposted by {dataPost.whoRepostedId === user.data.id ? "you" : dataPost.whoReposted}
+                </RepostContainer>
+                :
+                null
+            }
+            <ContainerPost comments={expendedComments? '0px': '0px'}>
                 <Left>
                     <img src={dataPost.userImage} alt='profile'></img>
                     <Icon onClick={(e) => { load ? doNothin() : like(dataPost.postId) }} >
@@ -162,6 +221,8 @@ export default function Post(props){
                         <ReactTooltip place='bottom' effect='solid' className='toolTip' arrowColor=' rgba(255, 255, 255, 0.9);d' />
                     </Icon>
                     <Comments numberCommnets={ quantyComments} setExpendedComments={setExpendedComments} expendedComments={expendedComments}/>
+                    <BiRepost color='white' fontSize={'26px'} style={{marginTop: '10px'}} onClick={repostModal}/>
+                    <h6>{dataPost.count} {dataPost.count === 1? <>re-post</>:<>re-posts</>}</h6>
                 </Left>
 
                 <Content editable={editable}>
@@ -212,6 +273,7 @@ const ContainerPost = styled.div`
     border-radius: 16px;
     padding: 15px 15px 15px 5px;
     display: flex;
+    margin-bottom: ${props => props.comments};
     position: relative;
     left: 0;
     top:0;
@@ -250,6 +312,13 @@ const Left = styled.div`
         object-fit: cover;
         margin-bottom: 20px;
     }
+
+    h6{
+        font-size: 11px;
+        color:#fff;
+        text-align: center;
+    }
+
     @media (max-width: 610px){
         width: 40px;
         img{
@@ -388,5 +457,29 @@ const Content = styled.div`
         .linkText > h5{
             font-size: 9px;
         }
+    }
+`
+const RepostContainer = styled.div`
+    width: 611px;
+    height: 45px;
+    background-color: #1E1E1E;
+    border-radius: 16px 16px 0 0;
+    margin-bottom: -10px;
+    padding-left: 10px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+
+    color: #FFFFFF;
+
+    display: flex;
+    align-items: center;
+    
+
+    @media (max-width: 610px){
+        width: 100%;
     }
 `

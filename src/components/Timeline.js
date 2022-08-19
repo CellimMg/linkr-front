@@ -67,6 +67,10 @@ export default function Timeline() {
             likes:postData.likes,
             whoLikes: postData.whoLikes,
             whoComments:postData.whoComments,
+            whoReposted: postData.whoReposted,
+            whoRepostedId: postData.whoRepostedId,
+            reposted: postData.reposted,
+            count : postData.count
             followers:postData.followers,
             comments
         }
